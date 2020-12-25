@@ -43,9 +43,9 @@ exports.freeLancerDbController = {
     },
 
     updateFreelancer(req, res) {
-        freelancer.updateOne({ id: req.params.id })
+        freelancer.findOneAndUpdate({ id: req.params }, req.body, { new: true })
             .then(docs => { res.json(docs) })
-            .catch(err => console.log(`Error updating freelancer from db: ${err}`));
+            .catch(err => console.log(`Error updating freelancer from db: ${err}`))
     },
 
     deleteFreelancer(req, res) {
