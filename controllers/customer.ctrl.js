@@ -4,7 +4,6 @@ const PersonalDetails = require('../models/personalDetails');
 exports.customerDbController = {
 
     getCustomers(req, res) {
-
         Customer.find({})
             .then(docs => { res.json(docs) })
             .catch(err => console.log(`Error retreiving data from DB: ${err}`));
@@ -12,7 +11,7 @@ exports.customerDbController = {
 
     getCustomer(req, res) {
 
-        Customer.findOne({ id: req.params.id })
+        Customer.findOne({ "personal_details.id": req.params.id })
             .then(docs => { res.json(docs) })
             .catch(err => console.log(`Error getting data from DB: ${err}`));
     },

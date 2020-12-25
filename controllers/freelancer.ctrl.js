@@ -9,10 +9,11 @@ exports.freeLancerDbController = {
     },
 
     getFreelancer(req, res) {
+        console.log(req.params.id);
         freelancer.findOne({ id: req.params.id })
             .then(docs => { res.json(docs) })
             .catch(err => console.log(`Error getting freelancer data from db: ${err}`));
-    },
+    }, 
 
     addFreelancer(req, res) {
         const newFreelancer = new freelancer({
