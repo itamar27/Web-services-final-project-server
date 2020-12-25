@@ -3,9 +3,8 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 
-// references to routers come here
-//
-//
+const freelancerRouter = require('./routers/freelancer.router');
+const customerRouter = require('./routers/customer.router');
 
 
 app.use(express.json());
@@ -20,9 +19,8 @@ app.use((req, res, next) => {
     next();
 });
 
-// other system middlewares come her
-//
-//
+app.use('/api/freelancer', freelancerRouter.freelancerRouter);
+app.use('api/customerRouter', customerRouter.customerRouter);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
