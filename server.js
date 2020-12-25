@@ -3,12 +3,12 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 
-const freelancerRouter = require('./routers/freelancer.router');
-const customerRouter = require('./routers/customer.router');
+const { freelancerRouter } = require('./routers/freelancer.router');
+const { customerRouter } = require('./routers/customer.router');
 
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 
 app.use((req, res, next) => {
@@ -19,8 +19,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api/freelancer', freelancerRouter.freelancerRouter);
-app.use('api/customerRouter', customerRouter.customerRouter);
+app.use('/api/freelancers', freelancerRouter);
+app.use('/api/customers', customerRouter);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
