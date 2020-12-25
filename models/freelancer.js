@@ -11,7 +11,8 @@ const skillsSchema = new Schema({
 const freelancerSchema = new Schema({
     personal_details: {type: personalDetails},
     description: {type: String},
-    skills: {type: skillsSchema}
+    skills: {type: skillsSchema},
+    jobs: [{type: jobsSchema}]
 }, {collection: 'freelancers'});
 
 const freelancer = model('freelancer', freelancerSchema);
