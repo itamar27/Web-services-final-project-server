@@ -1,7 +1,7 @@
 const freelancer = require('../models/freelancer');
 
 exports.freeLancerDbController = {
-    
+  
     getFreelancers(req, res) {
         freelancer.find({})
             .then(docs => { res.json(docs) })
