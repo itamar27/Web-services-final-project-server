@@ -49,7 +49,7 @@ exports.customerDbController = {
 
     updateCustomer(req, res) {
 
-        Customer.updateOne({ id: req.params })
+        Customer.findOneAndUpdate({ id: req.params }, req.body, { new: true })
             .then(docs => { res.json(docs) })
             .catch(err => console.log(`Error updating customer from db: ${err}`))
     },
