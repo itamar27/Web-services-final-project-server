@@ -1,4 +1,5 @@
 const {Schema, model} = require('mongoose');
+const jobSchema = require('./job');
 const personalDetails = require('./personalDetails')
 
 const skillsSchema = new Schema({
