@@ -1,5 +1,5 @@
 const { Router } = require('express');
-// const { freeLancerDbController } = require('../controllers/restaurant.ctrl');
+const { freeLancerDbController } = require('../controllers/freelancer.ctrl');
 
 const freelancerRouter = new Router();
 
