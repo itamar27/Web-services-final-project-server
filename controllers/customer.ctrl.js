@@ -10,31 +10,30 @@ exports.customerDbController = {
     },
 
     getCustomer(req, res) {
-
-        Customer.findOne({ "personal_details.id": req.params.id })
+        Customer.findOne({ "personal_details.id": req.params.id }) 
             .then(docs => { res.json(docs) })
             .catch(err => console.log(`Error getting data from DB: ${err}`));
     },
 
-    addCustomer(req, res) {
-
+    async addCustomer(req, res) {
+        const item = await Customer.findOne({}).sort({ _id: -1 }).limit(1);
+        let id = item.personal_details.id;
         const newCustomer = new Customer({
-
-            'personal_details': {
-                'id': this.lastId() + 1,
-                'first_name': req.params.first_name,
-                'last_name': req.params.last_name,
-                'email': req.params.email,
-                'address': req.params.address,
-                'phone': req.params.phone,
-                'linkedin': req.params.linkedin,
-                'facebook': req.params.facebook
+            'personal_details':{
+                'id': id + 1,
+                'first_name': req.body.first_name,
+                'last_name': req.body.last_name,
+                'email': req.body.email,
+                'address': req.body.address,
+                'phone': req.body.phone,
+                'linkedin': req.body.linkedin,
+                'facebook': req.body.facebook
             },
-
-            'jobs_id': null
+            'jobs_id': []
         })
 
-        const result = newCustomer.save();
+        // check if we want to wait for respone in order to send back
+        const result = await newCustomer.save();
 
         if (result) {
             res.json(result);
@@ -43,31 +42,30 @@ exports.customerDbController = {
             res.status(404).send("Error saving a new customer");
 
         }
-
+ 
     },
 
     updateCustomer(req, res) {
 
-        Customer.findOneAndUpdate({ id: req.params }, req.body, { new: true })
+        //need to add process to body
+
+        Customer.findOneAndUpdate({ "personal_details.id": req.params.id }, req.body, { new: true })
             .then(docs => { res.json(docs) })
             .catch(err => console.log(`Error updating customer from db: ${err}`))
     },
 
     deleteCustomer(req, res) {
 
-        Customer.deleteOne({ id: req.params.id })
+        Customer.deleteOne({ "personal_details.id": req.params.id })
             .then(docs => res.json(docs))
             .catch(err => console.log(`Error deleting restaurant from db: ${err}`));
     },
-
-    /*
-     * Last id retrieve function;
-     */
-    lastId(req, res) {
-
-        const id = Customer.findOne({}, {}, { sort: { 'id': -1 } }).id;
-        return id;
-    }
-
-
 }
+
+
+/*
+to push to array
+{
+    "$push": { "jobs_id": 5 } 
+}
+*/

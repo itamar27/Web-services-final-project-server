@@ -9,33 +9,36 @@ exports.freeLancerDbController = {
     },
 
     getFreelancer(req, res) {
-        console.log(req.params.id);
-        freelancer.findOne({ id: req.params.id })
+        freelancer.findOne({ "personal_details.id": req.params.id })
             .then(docs => { res.json(docs) })
             .catch(err => console.log(`Error getting freelancer data from db: ${err}`));
     }, 
 
-    addFreelancer(req, res) {
+    async addFreelancer(req, res) {
+        const item = await Customer.findOne({}).sort({ _id: -1 }).limit(1);
+        let id = item.personal_details.id;
         const newFreelancer = new freelancer({
             'personal_details' : {
-                'id': this.lastId() + 1,
-                'first_name': req.params.first_name,
-                'last_name': req.params.last_name,
-                'email': req.params.email,
-                'address' : req.params.address,
-                'phone' : req.params.phone,
-                'linkedin' : req.params.linkedin,
-                'facebook' : req.params.facebook
+                'id':  id + 1,
+                'first_name': req.body.first_name,
+                'last_name': req.body.last_name,
+                'email': req.body.email,
+                'address' : req.body.address,
+                'phone' : req.body.phone,
+                'linkedin' : req.body.linkedin,
+                'facebook' : req.body.facebook
             },
             'skills': {
-                'work_experience': req.params.work_experience,
-                'work_history': req.params.work_history,
-                'programming_languages': req.params.work_fields,
-                'work_fields': req.params.work_fields
+                'work_experience': req.body.work_experience,
+                'work_history': req.body.work_history,
+                'programming_languages': req.body.work_fields,
+                'work_fields': req.body.work_fields
             },
-            'jobs':null,
+            'jobs':[],
         });
-        const result = newFreelancer.save();
+
+        // check if we want to wait for respone in order to send back
+        const result = await newFreelancer.save();
 
         if (result) {
             res.json(result)
@@ -45,6 +48,9 @@ exports.freeLancerDbController = {
     },
 
     updateFreelancer(req, res) {
+
+        //need to add process to body
+
         freelancer.findOneAndUpdate({ id: req.params }, req.body, { new: true })
             .then(docs => { res.json(docs) })
             .catch(err => console.log(`Error updating freelancer from db: ${err}`))
@@ -56,12 +62,4 @@ exports.freeLancerDbController = {
             .catch(err => console.log(`Error deleting freelancer from db: ${err}`));
     },
 
-    /*
-     * Last id retrieve function;
-     */
-    lastId(req,res){
-
-        const id = Customer.findOne({}, {}, {sort: {'id' : -1}}).id;
-        return id;
-    }
-} 
+}
