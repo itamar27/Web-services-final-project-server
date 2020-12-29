@@ -5,7 +5,8 @@ const port = process.env.PORT || 3000;
 
 const { freelancerRouter } = require('./routers/freelancer.router');
 const { customerRouter } = require('./routers/customer.router');
-const {jobRouter} = require('./routers/job.router');
+const {externalApiRouter } = require('./routers/externalApi.router');
+// const {jobRouter} = require('./routers/job.router');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,7 +24,8 @@ app.use((req, res, next) => {
 
 app.use('/api/freelancers', freelancerRouter);
 app.use('/api/customers', customerRouter);
-app.use('/api/jobs', jobRouter);
+app.use('/api/externalApi', externalApiRouter);
+// app.use('/api/jobs', jobRouter);
 
 
 app.use((err, req, res, next) => {

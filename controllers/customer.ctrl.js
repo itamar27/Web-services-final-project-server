@@ -33,7 +33,7 @@ exports.customerDbController = {
         })
 
         // check if we want to wait for respone in order to send back
-        const result = await newCustomer.save();
+        const result = newCustomer.save();
 
         if (result) {
             res.json(result);
