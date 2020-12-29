@@ -1,7 +1,13 @@
 const Customer = require('../models/customer');
-const PersonalDetails = require('../models/personalDetails');
+// const PersonalDetails = require('../models/personalDetails');
 
-exports.customerDbController = {
+const customerDbController = {
+
+    // async getLocalId(id){
+    //     Customer.findOne({ "freelancer_api_id":id}) 
+    //     .then(docs => { console.log(docs); return {"ok":ok}})
+    //     .catch(err => console.log(`Error getting data from DB: ${err}`));
+    // },
 
     getCustomers(req, res) {
         Customer.find({})
@@ -10,39 +16,38 @@ exports.customerDbController = {
     },
 
     getCustomer(req, res) {
-        Customer.findOne({ "personal_details.id": req.params.id }) 
+        Customer.findOne({ "personal_details.id": req.params.id })
             .then(docs => { res.json(docs) })
             .catch(err => console.log(`Error getting data from DB: ${err}`));
     },
 
     async addCustomer(req, res) {
-        const item = await Customer.findOne({}).sort({ _id: -1 }).limit(1);
-        let id = item.personal_details.id;
-        const newCustomer = new Customer({
-            'personal_details':{
-                'id': id + 1,
-                'first_name': req.body.first_name,
-                'last_name': req.body.last_name,
-                'email': req.body.email,
-                'address': req.body.address,
-                'phone': req.body.phone,
-                'linkedin': req.body.linkedin,
-                'facebook': req.body.facebook
-            },
-            'jobs_id': []
-        })
+        Customer.findOne({}).sort({ _id: -1 }).limit(1)
+            .then((lastid) => {
+                let id = lastid.personal_details.id;
+                const newCustomer = new Customer({
+                    'personal_details': {
+                        'id': id + 1,
+                        'first_name': req.body.first_name,
+                        'last_name': req.body.last_name,
+                        'email': req.body.email,
+                        'address': req.body.address,
+                        'phone': req.body.phone,
+                        'linkedin': req.body.linkedin,
+                        'facebook': req.body.facebook,
 
-        // check if we want to wait for respone in order to send back
-        const result = newCustomer.save();
+                    },
+                    "freelancer_api_id": req.body.freelancer_api_id,
+                    "freelancer_api_username": req.body.freelancer_api_username,
+                    'jobs_id': []
+                })
 
-        if (result) {
-            res.json(result);
-        }
-        else {
-            res.status(404).send("Error saving a new customer");
+                newCustomer.save()
+                    .then((response) => { res.json(response); })
+                    .catch((err) => { res.status(404).send(`Error saving a new customer + ${err}`); })
+            })
+            .catch((err) => { res.status(404).send("Error finding last customer id"); })
 
-        }
- 
     },
 
     updateCustomer(req, res) {
@@ -60,12 +65,20 @@ exports.customerDbController = {
             .then(docs => res.json(docs))
             .catch(err => console.log(`Error deleting restaurant from db: ${err}`));
     },
-}
+};
 
+const getLocalId = async (id) => {
+    Customer.findOne({ freelancer_api_id: id })
+        .then(docs => { return docs })
+        .catch(err => console.log(`Error getting data from DB: ${err}`));
+};
+
+
+module.exports = { getLocalId, customerDbController };
 
 /*
 to push to array
 {
-    "$push": { "jobs_id": 5 } 
+    "$push": { "jobs_id": 5 }
 }
 */
