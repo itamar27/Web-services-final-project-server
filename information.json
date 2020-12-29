@@ -1,0 +1,60 @@
+{
+    "categories": [
+        {
+            "id": 1,
+            "name": "Websites, IT & Software"
+        },
+        {
+            "id": 9,
+            "name": "Mobile Phones & Computing"
+        },
+        {
+            "id": 2,
+            "name": "Writing & Content"
+        },
+        {
+            "id": 3,
+            "name": "Design, Media & Architecture"
+        },
+        {
+            "id": 4,
+            "name": "Data Entry & Admin"
+        },
+        {
+            "id": 5,
+            "name": "Engineering & Science"
+        },
+        {
+            "id": 8,
+            "name": "Product Sourcing & Manufacturing"
+        },
+        {
+            "id": 6,
+            "name": "Sales & Marketing"
+        },
+        {
+            "id": 100,
+            "name": "Freight, Shipping & Transportation"
+        },
+        {
+            "id": 101,
+            "name": "Telecommunications"
+        },
+        {
+            "id": 7,
+            "name": "Business, Accounting, Human Resources & Legal"
+        },
+        {
+            "id": 10,
+            "name": "Translation & Languages"
+        },
+        {
+            "id": 12,
+            "name": "Local Jobs & Services"
+        },
+        {
+            "id": 99,
+            "name": "Other"
+        }
+    ]
+}

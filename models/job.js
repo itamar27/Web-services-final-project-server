@@ -1,4 +1,4 @@
-const {Schema} = require('mongoose');
+const {Schema, model} = require('mongoose');
 
 const goalSchema = new Schema({
     phase: {type: Number},
@@ -18,4 +18,5 @@ const jobSchema = new Schema({
 }, {collection: 'jobs'});
 
 
-module.exports = jobSchema;
+const job = model('job', jobSchema);
+module.exports = job;
