@@ -5,7 +5,6 @@ const externalApiRouter = new Router();
 
 
 externalApiRouter.get('/projects', externalApiController.getProjects); 
-externalApiRouter.get('/', externalApiController.check);    
 
 
 module.exports = { externalApiRouter };

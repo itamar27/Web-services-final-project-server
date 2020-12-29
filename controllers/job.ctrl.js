@@ -15,6 +15,7 @@ exports.jobDbController = {
     }, 
 
     async addJob(req, res) {
+        const job = req.body;
     },
 
     updateJob(req, res) {
