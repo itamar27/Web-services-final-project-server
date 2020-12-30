@@ -1,42 +1,45 @@
 const axios = require('axios').default;
+const moment = require('moment');
+const { getAllCostumers } = require('./customer.ctrl');
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
-
-
-const MaxProjectsNum = 20;
-
 class JobOffer {
-    constructor(job, index) {
-        this.owner_id = job.id
-        this.title = job.title
-        this.currency_code = job.currency.sign;   
-        this.description = job.description;
-        this.job_categor = job.jobs[index].category.name;
-        this.price =  (job.budget.minimum + job.budget.maximum) / 2 ;
-        this.time_submitted = new Date(job.time_submitted * 1000).toLocaleString().substr(0,10);
+    constructor(project, job) {
+        this.owner_id = project.id
+        this.title = project.title
+        this.currency_code = project.currency.sign;
+        this.description = project.description;
+        this.job_category = job.category.name;
+        this.price = (project.budget.minimum + project.budget.maximum) / 2;
+        this.time_submitted = new Date(project.time_submitted * 1000).toLocaleString().substr(0, 10);
     }
 }
 
 exports.externalApiController = {
     getProjects(req, res) {
-        let ans = Array();
+        let jobs = Array();
+        let query = 'https://www.freelancer.com/api/projects/0.1/projects/?compact=true&full_description=true&languages[]=en&job_details=true';
 
-        const promise = axios.get('https://www.freelancer.com/api/projects/0.1/projects/all/?compact=true&full_description=true&languages[]=en&project_types[]=fixed&job_details=true&query=web&limit=50&project_statuses[]=active')
-        .then((response) => {
-            const projects = response.data.result.projects;
-            
-            for(let i = 0 ; i < projects.length && i < MaxProjectsNum ; i++){
-                for(let j = 0 ; j < projects[i].jobs.length ; j++){
-                    if(projects[i].jobs[j].category.id == 1){
-                        ans.push(new JobOffer(projects[i], j));
-                        break;
-                    }
-                }
-            }
-            res.json(ans);
-
-        }).catch((err)=>{
-            console.log(err);
-        });
+        getAllCostumers()
+            .then((costumers) => {
+                costumers.forEach((costumer) => { query += `&owners[]=${costumer.freelancer_api_id}` })
+                axios.get(query)
+                    .then((response) => {
+                        response.data.result.projects.forEach((project) => {
+                            if (project.status == "active") {
+                                project.jobs.every((job) => {
+                                    if (job.category.id == 1) {
+                                        jobs.push(new JobOffer(project, job));
+                                        return false;
+                                    }
+                                    return true;
+                                })
+                            }
+                        })
+                        res.json(jobs);
+                    })
+                    .catch((err) => { console.log(err); });
+            })
+            .catch((err) => { console.log(err)});
     }
 }
