@@ -1,15 +1,13 @@
 const freelancer = require('../models/freelancer');
+const { processBody } = require('./helper.ctrl');
 
-exports.freeLancerDbController = {
+freeLancerDbController = {
 
     getFreelancers(req, res) {
         freelancer.find({})
             .then(docs => { res.json(docs) })
             .catch(err => console.log(`Error getting freelancers data from db: ${err}`));
     },
-
-
-
 
     getFreelancer(req, res) {
         freelancer.findOne({ "personal_details.id": req.params.id })
@@ -36,7 +34,7 @@ exports.freeLancerDbController = {
                         'work_experience': req.body.work_experience,
                         'work_history': req.body.work_history,
                         'programming_languages': req.body.work_fields,
-                        'work_fields': req.body.work_fields
+                        'work_fields': req.body.work_fields             // edit push
                     },
                     'jobs': [],
                 });
@@ -50,12 +48,15 @@ exports.freeLancerDbController = {
     },
 
     updateFreelancer(req, res) {
+        const update = processBody(req.body);
+        updateFreelancerHelper(req.params.id, update)
+            .then((response) => res.json(response))
+            .catch(err => console.log(`At: updateFreeLancer, error wehile updating freelancer: ${err}`));
+            
 
-        //need to add process to body
-
-        freelancer.findOneAndUpdate({ id: req.params }, req.body, { new: true })
-            .then(docs => { res.json(docs) })
-            .catch(err => console.log(`Error updating freelancer from db: ${err}`))
+        // freelancer.findOneAndUpdate({ "personal_details.id": req.params.id }, update, { new: true, useFindAndModify: false })
+        //     .then(docs => { res.json(docs) })
+        //     .catch(err => console.log(`At: updateFreeLancer, error ehile updating freelancer: ${err}`))
     },
 
     deleteFreelancer(req, res) {
@@ -65,3 +66,12 @@ exports.freeLancerDbController = {
     },
 
 }
+
+
+const updateFreelancerHelper = (id,update) => {
+    return freelancer.findOneAndUpdate({ "personal_details.id": id }, update, { new: true, useFindAndModify: false })
+    .then(docs => { return docs })
+    .catch(err => console.log(`At: updateFreelancerHelper, error wehile updating freelancer: ${err}`))
+}
+
+module.exports = {updateFreelancerHelper , freeLancerDbController }

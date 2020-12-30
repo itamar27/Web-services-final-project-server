@@ -1,33 +1,35 @@
 const Customer = require('../models/customer');
-// const PersonalDetails = require('../models/personalDetails');
+const { processBody } = require('./helper.ctrl');
+const {writeLog} = require('../logs/logs');
 
 const customerDbController = {
 
-    // async getLocalId(id){
-    //     Customer.findOne({ "freelancer_api_id":id}) 
-    //     .then(docs => { console.log(docs); return {"ok":ok}})
-    //     .catch(err => console.log(`Error getting data from DB: ${err}`));
-    // },
-
     getCustomers(req, res) {
-        Customer.find({})
-            .then(docs => { res.json(docs) })
-            .catch(err => console.log(`Error retreiving data from DB: ${err}`));
+        getAllCostumers()
+            .then((ans) => { res.json(ans) })
+            .catch(err => console.log(`Error getting data from DB: ${err}`))
+            .finally(() => {writeLog(req,res);})
     },
 
-    getCustomer(req, res) {
-        Customer.findOne({ "personal_details.id": req.params.id })
+    async getCustomer(req, res) {
+        let id = req.params.id;
+
+        if (req.query.owner)
+            id = await convertId(req.params.id);
+
+        Customer.findOne({ "personal_details.id": id })
             .then(docs => { res.json(docs) })
-            .catch(err => console.log(`Error getting data from DB: ${err}`));
+            .catch(err => console.log(`At: getCostumer, error getting data from DB: ${err}`))
+            .finally(() => {writeLog(req,res);})
     },
 
-    async addCustomer(req, res) {
+    addCustomer(req, res) {
         Customer.findOne({}).sort({ _id: -1 }).limit(1)
-            .then((lastid) => {
-                let id = lastid.personal_details.id;
+            .then((lastCostumer) => {
+
                 const newCustomer = new Customer({
                     'personal_details': {
-                        'id': id + 1,
+                        'id': lastCostumer.personal_details.id + 1,
                         'first_name': req.body.first_name,
                         'last_name': req.body.last_name,
                         'email': req.body.email,
@@ -45,18 +47,16 @@ const customerDbController = {
                 newCustomer.save()
                     .then((response) => { res.json(response); })
                     .catch((err) => { res.status(404).send(`Error saving a new customer + ${err}`); })
-            })
-            .catch((err) => { res.status(404).send("Error finding last customer id"); })
+            }).catch((err) => { res.status(404).send("Error finding last customer id"); })
 
     },
 
     updateCustomer(req, res) {
+        const update = processBody(req.body);
 
-        //need to add process to body
-
-        Customer.findOneAndUpdate({ "personal_details.id": req.params.id }, req.body, { new: true })
-            .then(docs => { res.json(docs) })
-            .catch(err => console.log(`Error updating customer from db: ${err}`))
+        updateCutomerHelper(req.params.id, update)
+            .then((response) => res.json(response))
+            .catch(err => console.log(`At: updateCustomer, error wehile updating customer: ${err}`));            
     },
 
     deleteCustomer(req, res) {
@@ -67,18 +67,27 @@ const customerDbController = {
     },
 };
 
-const getLocalId = async (id) => {
-    Customer.findOne({ freelancer_api_id: id })
-        .then(docs => { return docs })
-        .catch(err => console.log(`Error getting data from DB: ${err}`));
+const convertId = (id) => {
+    return Customer.findOne({ freelancer_api_id: id })
+        .then(docs => { return docs.personal_details.id })
+        .catch(err => console.log(`At: convertId, error getting data from DB: ${err}`));
 };
 
 
-module.exports = { getLocalId, customerDbController };
+const getAllCostumers = () => {
+    return Customer.find({})
+        .then(docs => { return docs })
+        .catch(err => console.log(`At: getAllCostumers, error retreiving data from DB: ${err}`));
+};
 
-/*
-to push to array
-{
-    "$push": { "jobs_id": 5 }
+
+const updateCutomerHelper = (id,update) => {
+    return Customer.findOneAndUpdate({ "personal_details.id": id }, update, { new: true, useFindAndModify: false })
+    .then(docs => { return docs })
+    .catch(err => console.log(`At: updateCutomerHelper , error wehile updating customer: ${err}`))
 }
-*/
+ 
+
+module.exports = { updateCutomerHelper, getAllCostumers, convertId, customerDbController };
+
+
