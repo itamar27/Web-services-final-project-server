@@ -1,14 +1,13 @@
 const Customer = require('../models/customer');
-const { processBody } = require('./helper.ctrl');
-const {writeLog} = require('../logs/logs');
+const { processBody, sendErrorAndLogResponse} = require('./helper.ctrl');
+const {writeResponse, success} = require('../logs/logs');
 
 const customerDbController = {
 
     getCustomers(req, res) {
         getAllCostumers()
-            .then((ans) => { res.json(ans) })
-            .catch(err => console.log(`Error getting data from DB: ${err}`))
-            .finally(() => {writeLog(req,res);})
+            .then((ans) => { res.json(ans) ; writeResponse(req,res,success); })
+            .catch(err =>sendErrorAndLogResponse(req,res,`Error getting data from DB: ${err}`));
     },
 
     async getCustomer(req, res) {
@@ -18,9 +17,8 @@ const customerDbController = {
             id = await convertId(req.params.id);
 
         Customer.findOne({ "personal_details.id": id })
-            .then(docs => { res.json(docs) })
-            .catch(err => console.log(`At: getCostumer, error getting data from DB: ${err}`))
-            .finally(() => {writeLog(req,res);})
+            .then(docs => { res.json(docs); writeResponse(req,res,success);})
+            .catch(err => sendErrorAndLogResponse(req,res,`At: getCostumer, error getting data from DB: ${err}`));
     },
 
     addCustomer(req, res) {
@@ -45,9 +43,9 @@ const customerDbController = {
                 })
 
                 newCustomer.save()
-                    .then((response) => { res.json(response); })
-                    .catch((err) => { res.status(404).send(`Error saving a new customer + ${err}`); })
-            }).catch((err) => { res.status(404).send("Error finding last customer id"); })
+                    .then((response) => { res.json(response);writeResponse(req,res,success); })
+                    .catch((err) => { sendErrorAndLogResponse(req,res,`Error saving a new customer + ${err}`);})
+            }).catch((err) => {sendErrorAndLogResponse(req,res,`Error finding last customer id + ${err}`);})
 
     },
 
@@ -55,8 +53,8 @@ const customerDbController = {
         const update = processBody(req.body);
 
         updateCutomerHelper(req.params.id, update)
-            .then((response) => res.json(response))
-            .catch(err => console.log(`At: updateCustomer, error wehile updating customer: ${err}`));            
+            .then((response) => {res.json(response); writeResponse(req,res,success);})
+            .catch(err => sendErrorAndLogResponse(req,res,`At: updateCustomer, error wehile updating customer: ${err}`));            
     },
 
     deleteCustomer(req, res) {
@@ -70,22 +68,24 @@ const customerDbController = {
 const convertId = (id) => {
     return Customer.findOne({ freelancer_api_id: id })
         .then(docs => { return docs.personal_details.id })
-        .catch(err => console.log(`At: convertId, error getting data from DB: ${err}`));
+        .catch(err =>writeResponse(req,res,`At: convertId, error getting data from DB: ${err}`)); 
 };
 
 
 const getAllCostumers = () => {
     return Customer.find({})
         .then(docs => { return docs })
-        .catch(err => console.log(`At: getAllCostumers, error retreiving data from DB: ${err}`));
+        .catch(err => writeResponse(req,res,`At: getAllCostumers, error retreiving data from DB: ${err}`)); 
 };
 
 
 const updateCutomerHelper = (id,update) => {
     return Customer.findOneAndUpdate({ "personal_details.id": id }, update, { new: true, useFindAndModify: false })
     .then(docs => { return docs })
-    .catch(err => console.log(`At: updateCutomerHelper , error wehile updating customer: ${err}`))
+    .catch(err => writeResponse(req,res,`At: updateCutomerHelper , error wehile updating customer: ${err}`));
 }
+
+
  
 
 module.exports = { updateCutomerHelper, getAllCostumers, convertId, customerDbController };

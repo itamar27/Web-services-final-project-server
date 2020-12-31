@@ -7,7 +7,7 @@ const { freelancerRouter } = require('./routers/freelancer.router');
 const { customerRouter } = require('./routers/customer.router');
 const {externalApiRouter } = require('./routers/externalApi.router');
 const {jobRouter} = require('./routers/job.router');
-const {writeLog} = require('./logs/logs');
+const {writeRequest} = require('./logs/logs');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,6 +22,10 @@ app.use((req, res, next) => {
 });
 
 
+app.all('*', (req, res, next) =>{
+    writeRequest(req);
+    next();
+})
 
 app.use('/api/freelancers', freelancerRouter);
 app.use('/api/customers', customerRouter);
