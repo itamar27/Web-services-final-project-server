@@ -47,4 +47,10 @@ const processBody = (data) => {
 }
 
 
-module.exports = {processBody}
+const sendErrorAndLogResponse = (req,res,err) =>{
+    res.status(500).send(err) 
+    writeResponse(req,res,err);
+}
+
+
+module.exports = {processBody , sendErrorAndLogResponse }

@@ -1,18 +1,18 @@
 const freelancer = require('../models/freelancer');
-const { processBody } = require('./helper.ctrl');
+const { processBody, sendErrorAndLogResponse } = require('./helper.ctrl');
 
 freeLancerDbController = {
 
     getFreelancers(req, res) {
         freelancer.find({})
-            .then(docs => { res.json(docs) })
-            .catch(err => console.log(`Error getting freelancers data from db: ${err}`));
+            .then(docs => { res.json(docs);writeResponse(req,res,success); })
+            .catch(err => sendErrorAndLogResponse(req,res,`Error getting freelancers data from db: ${err}`));
     },
 
     getFreelancer(req, res) {
         freelancer.findOne({ "personal_details.id": req.params.id })
-            .then(docs => { res.json(docs) })
-            .catch(err => console.log(`Error getting freelancer data from db: ${err}`));
+            .then(docs => { res.json(docs);writeResponse(req,res,success); })
+            .catch(err => sendErrorAndLogResponse(req,res,`Error getting freelancer data from db: ${err}`));
     },
 
     async addFreelancer(req, res) {
@@ -40,18 +40,18 @@ freeLancerDbController = {
                 });
 
                 newFreelancer.save()
-                    .then(response => { res.json(response) })
-                    .catch(err => { res.status(404).send(`Error saving a freelancer: + ${err}`); })
+                    .then(response => { res.json(response);writeResponse(req,res,success); })
+                    .catch(err => { sendErrorAndLogResponse(req,res,`Error saving a freelancer: + ${err}`)});
             })
-            .catch(err => { res.status(404).send(`Error getting last freelancer id: + ${err}`); })
+            .catch(err => { sendErrorAndLogResponse(req,res,`Error getting last freelancer id: + ${err}`)});
 
     },
 
     updateFreelancer(req, res) {
         const update = processBody(req.body);
         updateFreelancerHelper(req.params.id, update)
-            .then((response) => res.json(response))
-            .catch(err => console.log(`At: updateFreeLancer, error wehile updating freelancer: ${err}`));
+            .then((response) => {res.json(response); writeResponse(req,res,success);})
+            .catch(err => sendErrorAndLogResponse(req,res,`At: updateFreeLancer, error wehile updating freelancer: ${err}`));
             
 
         // freelancer.findOneAndUpdate({ "personal_details.id": req.params.id }, update, { new: true, useFindAndModify: false })
@@ -61,8 +61,8 @@ freeLancerDbController = {
 
     deleteFreelancer(req, res) {
         freelancer.deleteOne({ id: req.params.id })
-            .then(docs => { res.json(docs) })
-            .catch(err => console.log(`Error deleting freelancer from db: ${err}`));
+            .then(docs => { res.json(docs); writeResponse(req,res,success); })
+            .catch(err => sendErrorAndLogResponse(req,res,`Error deleting freelancer from db: ${err}`));
     },
 
 }
@@ -71,7 +71,7 @@ freeLancerDbController = {
 const updateFreelancerHelper = (id,update) => {
     return freelancer.findOneAndUpdate({ "personal_details.id": id }, update, { new: true, useFindAndModify: false })
     .then(docs => { return docs })
-    .catch(err => console.log(`At: updateFreelancerHelper, error wehile updating freelancer: ${err}`))
+    .catch(err =>  writeResponse(req,res,`At: updateFreelancerHelper, error wehile updating freelancer: ${err}`));
 }
 
 module.exports = {updateFreelancerHelper , freeLancerDbController }
