@@ -1,6 +1,6 @@
 const axios = require('axios').default;
-const moment = require('moment');
 const { getAllCostumers } = require('./customer.ctrl');
+const { responseBadRequest, writeResponse, success } = require('./helper.ctrl');
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 class JobOffer {
@@ -19,11 +19,10 @@ exports.externalApiController = {
     getProjects(req, res) {
         let jobs = Array();
         const url = 'https://www.freelancer.com/api/projects/0.1/projects/?compact=true&full_description=true&languages[]=en&job_details=true';
-        let query= "";
+        let query = "";
         getAllCostumers()
             .then((costumers) => {
                 costumers.forEach((costumer) => { query += `&owners[]=${costumer.freelancer_api_id}` })
-                console.log(url + query);
                 axios.get(url + query)
                     .then((response) => {
                         response.data.result.projects.forEach((project) => {
@@ -38,9 +37,10 @@ exports.externalApiController = {
                             }
                         })
                         res.json(jobs);
+                        writeResponse(req, res);
                     })
-                    .catch((err) => { console.log(err); });
+                    .catch((err) => { responseBadRequest(err) });
             })
-            .catch((err) => { console.log(err)});
+            .catch((err) => { responseBadRequest(err) });
     }
 }

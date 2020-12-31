@@ -1,3 +1,5 @@
+const { writeResponse } = require('../logs/logs.js');
+
 
 const processBody = (data) => {
     let update = Object();
@@ -33,12 +35,12 @@ const processBody = (data) => {
     if (data.jobs_id)
         update.$push = { "jobs_id": data.jobs_id };
 
-    if(data.description)
+    if (data.description)
         update.description = data.description;
-    
-    if(data.skills){
+
+    if (data.skills) {
         update.skills = Array();
-        data.skills.forEach((skill)=>{
+        data.skills.forEach((skill) => {
             update.skills.push(skill);
         })
     }
@@ -47,10 +49,10 @@ const processBody = (data) => {
 }
 
 
-const sendErrorAndLogResponse = (req,res,err) =>{
-    res.status(500).send(err) 
-    writeResponse(req,res,err);
+const responseBadRequest = (req, res, err) => {
+    res.status(500).send(err);
+    writeResponse(req, res, err);
 }
 
 
-module.exports = {processBody , sendErrorAndLogResponse }
+module.exports = { writeResponse, processBody, responseBadRequest }
