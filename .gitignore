@@ -103,4 +103,4 @@ dist
 .tern-port
 
 #JobMap files
-information
+/information.json
