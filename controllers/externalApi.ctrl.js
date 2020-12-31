@@ -1,5 +1,4 @@
 const axios = require('axios').default;
-const moment = require('moment');
 const { getAllCostumers } = require('./customer.ctrl');
 const { responseBadRequest, writeResponse, success } = require('./helper.ctrl');
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -38,7 +37,7 @@ exports.externalApiController = {
                             }
                         })
                         res.json(jobs);
-                        writeResponse(req, res, success);
+                        writeResponse(req, res);
                     })
                     .catch((err) => { responseBadRequest(err) });
             })

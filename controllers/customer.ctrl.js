@@ -1,5 +1,5 @@
 const Customer = require('../models/customer');
-const { processBody, responseBadRequest, writeResponse, success } = require('./helper.ctrl');
+const { processBody, responseBadRequest, writeResponse } = require('./helper.ctrl');
 
 
 const customerDbController = {
@@ -8,7 +8,7 @@ const customerDbController = {
         getAllCostumers()
             .then((ans) => {
                 res.json(ans);
-                writeResponse(req, res, success);
+                writeResponse(req, res);
             })
             .catch(err => responseBadRequest(req, res, `Error getting data from DB: ${err}`));
     },
@@ -22,7 +22,7 @@ const customerDbController = {
         Customer.findOne({ "personal_details.id": id })
             .then(docs => {
                 res.json(docs);
-                writeResponse(req, res, success);
+                writeResponse(req, res);
             })
             .catch(err => responseBadRequest(req, res, `At: getCostumer, error getting data from DB: ${err}`));
     },
@@ -51,7 +51,7 @@ const customerDbController = {
                 newCustomer.save()
                     .then((response) => {
                         res.json(response);
-                        writeResponse(req, res, success);
+                        writeResponse(req, res);
                     })
                     .catch((err) => { responseBadRequest(req, res, `Error saving a new customer + ${err}`); })
             }).catch((err) => { responseBadRequest(req, res, `Error finding last customer id + ${err}`); })
@@ -64,7 +64,7 @@ const customerDbController = {
         updateCutomerHelper(req.params.id, update)
             .then((response) => {
                 res.json(response);
-                writeResponse(req, res, success);
+                writeResponse(req, res);
             })
             .catch(err => responseBadRequest(req, res, `At: updateCustomer, error wehile updating customer: ${err}`));
     },

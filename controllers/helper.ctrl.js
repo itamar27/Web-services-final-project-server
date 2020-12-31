@@ -1,4 +1,4 @@
-const { writeResponse, success } = require('../logs/logs.js');
+const { writeResponse } = require('../logs/logs.js');
 
 
 const processBody = (data) => {
@@ -50,7 +50,7 @@ const processBody = (data) => {
 
 
 const responseBadRequest = (req, res, err) => {
-    res.status(500).send(err)
+    res.status(500).send(err);
     writeResponse(req, res, err);
 }
 

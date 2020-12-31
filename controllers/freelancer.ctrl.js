@@ -7,7 +7,7 @@ freeLancerDbController = {
         freelancer.find({})
             .then(docs => {
                 res.json(docs);
-                writeResponse(req, res, success);
+                writeResponse(req, res);
             })
             .catch(err => responseBadRequest(req, res, `Error getting freelancers data from db: ${err}`));
     },
@@ -16,7 +16,7 @@ freeLancerDbController = {
         freelancer.findOne({ "personal_details.id": req.params.id })
             .then(docs => {
                 res.json(docs);
-                writeResponse(req, res, success);
+                writeResponse(req, res);
             })
             .catch(err => responseBadRequest(req, res, `Error getting freelancer data from db: ${err}`));
     },
@@ -48,7 +48,7 @@ freeLancerDbController = {
                 newFreelancer.save()
                     .then(response => {
                         res.json(response);
-                        writeResponse(req, res, success);
+                        writeResponse(req, res);
                     })
                     .catch(err => { responseBadRequest(req, res, `Error saving a freelancer: + ${err}`) });
             })
@@ -61,7 +61,7 @@ freeLancerDbController = {
         updateFreelancerHelper(req.params.id, update)
             .then((response) => {
                 res.json(response);
-                writeResponse(req, res, success);
+                writeResponse(req, res);
             })
             .catch(err => responseBadRequest(req, res, `At: updateFreeLancer, error wehile updating freelancer: ${err}`));
 
@@ -75,7 +75,7 @@ freeLancerDbController = {
         freelancer.deleteOne({ id: req.params.id })
             .then(docs => {
                 res.json(docs);
-                writeResponse(req, res, success);
+                writeResponse(req, res);
             })
             .catch(err => responseBadRequest(req, res, `Error deleting freelancer from db: ${err}`));
     },

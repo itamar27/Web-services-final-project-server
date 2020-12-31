@@ -1,5 +1,5 @@
 const Job = require('../models/job');
-const { processBody, responseBadRequest, writeResponse, success } = require('./helper.ctrl');
+const { processBody, responseBadRequest, writeResponse } = require('./helper.ctrl');
 const { convertId, updateCutomerHelper } = require('./customer.ctrl');
 const { updateFreelancerHelper } = require('./freelancer.ctrl');
 
@@ -10,7 +10,7 @@ exports.jobDbController = {
         Job.find({})
             .then(docs => {
                 res.json(docs);
-                writeResponse(req, res, success);
+                writeResponse(req, res);
             })
             .catch(err => responseBadRequest(req, res, `Error getting jobs data from db: ${err}`));
     },
@@ -19,7 +19,7 @@ exports.jobDbController = {
         Job.findOne({ id: req.params.id })
             .then(docs => {
                 res.json(docs);
-                writeResponse(req, res, success);
+                writeResponse(req, res);
             })
             .catch(err => responseBadRequest(req, res, `At: getJob, Error getting data from db: ${err}`));
     },
@@ -46,7 +46,7 @@ exports.jobDbController = {
                                         updateCutomerHelper(result.customer_id, { "$push": { "jobs_id": result.id } })
                                             .then(() => {
                                                 res.json(result);
-                                                writeResponse(req, res, success);
+                                                writeResponse(req, res);
                                             })
                                             .catch(err => { responseBadRequest(req, res, `At: addJob, error updating customer: ${err}`); });
                                     })
@@ -65,7 +65,7 @@ exports.jobDbController = {
         Job.findOneAndUpdate({ id: req.params.id }, update, { new: true, useFindAndModify: false })
             .then(docs => {
                 res.json(docs);
-                writeResponse(req, res, success);
+                writeResponse(req, res);
             })
             .catch(err => responseBadRequest(req, res, `Error updating job from db: ${err}`));
     },
@@ -74,7 +74,7 @@ exports.jobDbController = {
         Job.deleteOne({ id: req.body.id })
             .then(docs => {
                 res.json(docs);
-                writeResponse(req, res, success);
+                writeResponse(req, res);
             })
             .catch(err => responseBadRequest(req, res, `Error deleting job from db: ${err}`));
     },

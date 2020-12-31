@@ -1,6 +1,5 @@
 const moment = require('moment');
 const colors = require('colors');
-
 const success = "request was successfull";
 
 colors.enable();
@@ -11,19 +10,20 @@ const writeRequest = (req) => {
 
 
 const writeResponse = (req, res, message) => {
-    let log = `{ time: ${moment().format('LLL')}  method: ${req.method}  status: ${res.statusCode}  message: ${message} } `;
 
-    if (res.statusCode === 200)
-        console.log(colors.green(log));
+    if (message == undefined)
+        message = success;
 
-    if (res.statusCode === 400)
-        console.log(colors.yellow(log));
+    const log = `{ time: ${moment().format('LLL')}  method: ${req.method}  status: ${res.statusCode}  message: ${message} } `;
 
     if (res.statusCode === 500)
         console.log(colors.red(log));
+    else
+        console.log(colors.green(log));
+
 };
 
 
 
 
-module.exports = { writeRequest, writeResponse, success };
+module.exports = { writeRequest, writeResponse };
