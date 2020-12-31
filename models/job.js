@@ -6,7 +6,7 @@ const goalSchema = new Schema({
     description: {type: String},
     meaningful: {type: Boolean},
     comments: {type:String, default:null},
-    progress: {type:Number, default:null}
+    progress: {type:Number, default:0}
 });
 
 const jobSchema = new Schema({
