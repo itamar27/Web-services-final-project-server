@@ -9,9 +9,9 @@ const skillsSchema = new Schema({
 })
 
 const freelancerSchema = new Schema({
-    personal_details: { type: personalDetails },
+    personal_details: { type: personalDetails, required: true },
     description: { type: String },
-    skills: { type: skillsSchema },
+    skills: { type: skillsSchema, required: true },
     jobs_id: [{ type: Number }]
 }, { collection: 'freelancers' });
 

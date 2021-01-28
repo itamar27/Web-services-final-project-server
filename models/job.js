@@ -3,7 +3,7 @@ const { Schema, model } = require('mongoose');
 const goalSchema = new Schema({
     phase: { type: Number, required: true },
     name: { type: String, required: true },
-    description: { type: String },
+    description: { type: String, required: true },
     meaningful: { type: Boolean },
     comments: { type: String, default: null },
     progress: { type: Number, default: 0 }
