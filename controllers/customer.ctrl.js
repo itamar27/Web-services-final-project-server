@@ -70,7 +70,6 @@ const customerDbController = {
     },
 
     deleteCustomer(req, res) {
-
         Customer.deleteOne({ "personal_details.id": req.params.id })
             .then(docs => res.json(docs))
             .catch(err => console.log(`Error deleting restaurant from db: ${err}`));
