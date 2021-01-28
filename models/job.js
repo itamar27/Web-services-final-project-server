@@ -14,7 +14,7 @@ const jobSchema = new Schema({
     project_name: { type: String },
     price: { type: String },
     customer_id: { type: Number },
-    startDate: { type: Date },
+    start_date: { type: Date },
     deadline: { type: Date },
     goals: [{ type: goalSchema }],
 }, { collection: 'jobs' });
