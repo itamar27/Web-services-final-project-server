@@ -5,9 +5,9 @@ const port = process.env.PORT || 3000;
 
 const { freelancerRouter } = require('./routers/freelancer.router');
 const { customerRouter } = require('./routers/customer.router');
-const {externalApiRouter } = require('./routers/externalApi.router');
-const {jobRouter} = require('./routers/job.router');
-const {writeRequest} = require('./logs/logs');
+const { freelancerApiRouter } = require('./routers/freelancerApi.router');
+const { jobRouter } = require('./routers/job.router');
+const { writeRequest } = require('./logs/logs');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,20 +22,18 @@ app.use((req, res, next) => {
 });
 
 
-app.all('*', (req, res, next) =>{
+app.all('*', (req, res, next) => {
     writeRequest(req);
     next();
 })
 
 app.use('/api/freelancers', freelancerRouter);
 app.use('/api/customers', customerRouter);
-app.use('/api/externalApi', externalApiRouter);
+app.use('/api/freelancerApi', freelancerApiRouter);
 app.use('/api/jobs', jobRouter);
 
 
-
-app.use((err, req, res, next) => {
-    console.error(err.stack);
+app.use((req, res) => {
     res.status(500).send('Something is broken!');
 });
 

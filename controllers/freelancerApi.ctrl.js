@@ -15,7 +15,7 @@ class JobOffer {
     }
 }
 
-exports.externalApiController = {
+exports.freelancerApiController = {
     getProjects(req, res) {
         let jobs = Array();
         const url = 'https://www.freelancer.com/api/projects/0.1/projects/?compact=true&full_description=true&languages[]=en&job_details=true';
