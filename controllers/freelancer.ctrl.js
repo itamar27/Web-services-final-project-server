@@ -21,7 +21,7 @@ freeLancerDbController = {
             .catch(err => responseBadRequest(req, res, `Error getting freelancer data from db: ${err}`));
     },
 
-    async addFreelancer(req, res) {
+    addFreelancer(req, res) {
         freelancer.findOne({}).sort({ _id: -1 }).limit(1)
             .then(item => {
                 let id = item.personal_details.id;

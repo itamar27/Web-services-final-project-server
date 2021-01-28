@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 const personalDetails = require('./personalDetails')
 
 const customerSchema = new Schema({
-    personal_details: { type: personalDetails },
+    personal_details: { type: personalDetails, required: true },
     freelancer_api_id: { type: Number },
     freelancer_api_username: { type: String, required: true },
     jobs_id: [{ type: Number }]

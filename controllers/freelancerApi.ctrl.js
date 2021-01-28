@@ -15,31 +15,36 @@ class JobOffer {
     }
 }
 
+
+const getDataFromFreelancer = (url, query, req, res) => {
+    let jobs = Array();
+    axios.get(url + query)
+        .then((response) => {
+            response.data.result.projects.forEach((project) => {
+                if (project.status == "active") {
+                    project.jobs.every((job) => {
+                        if (job.category.id == 1) {
+                            jobs.push(new JobOffer(project, job));
+                            return false;
+                        }
+                        return true;
+                    })
+                }
+            })
+            res.json(jobs);
+            writeResponse(req, res);
+        }).catch((err) => { responseBadRequest(err) });
+}
+
 exports.freelancerApiController = {
     getProjects(req, res) {
-        let jobs = Array();
+
         const url = 'https://www.freelancer.com/api/projects/0.1/projects/?compact=true&full_description=true&languages[]=en&job_details=true';
         let query = "";
         getAllCostumers()
             .then((costumers) => {
-                costumers.forEach((costumer) => { query += `&owners[]=${costumer.freelancer_api_id}` })
-                axios.get(url + query)
-                    .then((response) => {
-                        response.data.result.projects.forEach((project) => {
-                            if (project.status == "active") {
-                                project.jobs.every((job) => {
-                                    if (job.category.id == 1) {
-                                        jobs.push(new JobOffer(project, job));
-                                        return false;
-                                    }
-                                    return true;
-                                })
-                            }
-                        })
-                        res.json(jobs);
-                        writeResponse(req, res);
-                    })
-                    .catch((err) => { responseBadRequest(err) });
+                costumers.forEach((costumer) => { query += `&owners[]=${costumer.freelancer_api_id}` });
+                getDataFromFreelancer(url, query, req, res);
             })
             .catch((err) => { responseBadRequest(err) });
     }
