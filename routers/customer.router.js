@@ -1,5 +1,7 @@
-const {Router} = require('express');
-const {customerDbController} = require('../controllers/customer.ctrl');
+const { Router } = require('express');
+const { customerDbController } = require('../controllers/customer.ctrl');
+const auth = require('../middleware/auth');
+const constants = require('../constants');
 
 const customerRouter = new Router();
 
@@ -11,4 +13,4 @@ customerRouter.delete('/:id', customerDbController.deleteCustomer);
 
 
 
-module.exports = {customerRouter};
+module.exports = { customerRouter };

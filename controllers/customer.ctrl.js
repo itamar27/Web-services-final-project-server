@@ -27,6 +27,7 @@ const customerDbController = {
             .catch(err => responseBadRequest(req, res, `At: getCostumer, error getting data from DB: ${err}`));
     },
 
+
     addCustomer(req, res) {
         Customer.findOne({}).sort({ _id: -1 }).limit(1)
             .then((lastCostumer) => {
@@ -96,7 +97,24 @@ const updateCutomerHelper = (id, update) => {
         .catch(err => writeResponse(req, res, `At: updateCutomerHelper , error wehile updating customer: ${err}`));
 }
 
+const writeCommentsBack = async (id, comments) => {
+    try {
+        await Customer.findOneAndUpdate({ "personal_details.id": id }, { "job_offers": comments }, { new: true, useFindAndModify: false })
+    } catch (err) {
+        writeResponse(req, res, `At: updateCutomerHelper , error wehile updating customer: ${err}`)
+    }
+}
+
+const getCostumerByGoogle = async (id) => {
+    try {
+        let customer = await Customer.findOne({ "personal_details.google_id": id })
+        return customer
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 
 
-module.exports = { updateCutomerHelper, getAllCostumers, convertId, customerDbController };
+
+module.exports = { updateCutomerHelper, getAllCostumers, convertId, getCostumerByGoogle, writeCommentsBack, customerDbController };
