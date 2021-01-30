@@ -39,6 +39,7 @@ const getDataFromFreelancer = (url, query, req, res) => {
         }).catch((err) => { responseBadRequest(err) });
 }
 
+
 exports.freelancerApiController = {
     async getProjects(req, res) {
         let jobs = Array();
@@ -110,22 +111,20 @@ const generateJobOffers = (offers) => {
             }
             return true;
         })
-    }
-                                        }
-    
-                                       getProjects(req, res) {
-
-        const url = 'https://www.freelancer.com/api/projects/0.1/projects/?compact=true&full_description=true&languages[]=en&job_details=true';
-        let query = "";
-        getAllCostumers()
-            .then((costumers) => {
-                costumers.forEach((costumer) => { query += `&owners[]=${costumer.freelancer_api_id}` });
-                getDataFromFreelancer(url, query, req, res);
-            })
-            .catch((err) => { responseBadRequest(err) });
-
-    }
-        // })
-    )
+    })
     return jobs
 }
+
+
+// getProjects(req, res) {
+//     const url = 'https://www.freelancer.com/api/projects/0.1/projects/?compact=true&full_description=true&languages[]=en&job_details=true';
+//     let query = "";
+//     getAllCostumers()
+//         .then((costumers) => {
+//             costumers.forEach((costumer) => { query += `&owners[]=${costumer.freelancer_api_id}` });
+//             getDataFromFreelancer(url, query, req, res);
+//         })
+//         .catch((err) => { responseBadRequest(err) });
+//     )
+// return jobs
+// }
