@@ -33,7 +33,7 @@ exports.jobDbController = {
                             "id": lastJob.id + 1,
                             "project_name": req.body.project_name,
                             "price": req.body.price,
-                            "startDate": req.body.startDate,
+                            "start_date": req.body.start_date,
                             "customer_id": serverId,
                             "deadline": req.body.deadline,
                             "goals": req.body.goals

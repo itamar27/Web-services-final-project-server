@@ -23,6 +23,7 @@ freeLancerDbController = {
 
     async addFreelancer(req, res) {
         Freelancer.findOne({}).sort({ _id: -1 }).limit(1)
+
             .then(item => {
                 let id = item.personal_details.id;
                 const newFreelancer = new Freelancer({

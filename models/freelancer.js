@@ -18,3 +18,4 @@ const freelancerSchema = new Schema({
 const Freelancer = model('freelancer', freelancerSchema);
 
 module.exports = Freelancer;
+
