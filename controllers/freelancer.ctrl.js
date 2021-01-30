@@ -1,10 +1,10 @@
-const freelancer = require('../models/freelancer');
+const Freelancer = require('../models/freelancer');
 const { processBody, responseBadRequest, writeResponse } = require('./helper.ctrl');
 
 freeLancerDbController = {
 
     getFreelancers(req, res) {
-        freelancer.find({})
+        Freelancer.find({})
             .then(docs => {
                 res.json(docs);
                 writeResponse(req, res);
@@ -13,7 +13,7 @@ freeLancerDbController = {
     },
 
     getFreelancer(req, res) {
-        freelancer.findOne({ "personal_details.id": req.params.id })
+        Freelancer.findOne({ "personal_details.id": req.params.id })
             .then(docs => {
                 res.json(docs);
                 writeResponse(req, res);
@@ -21,11 +21,12 @@ freeLancerDbController = {
             .catch(err => responseBadRequest(req, res, `Error getting freelancer data from db: ${err}`));
     },
 
-    addFreelancer(req, res) {
-        freelancer.findOne({}).sort({ _id: -1 }).limit(1)
+    async addFreelancer(req, res) {
+        Freelancer.findOne({}).sort({ _id: -1 }).limit(1)
+
             .then(item => {
                 let id = item.personal_details.id;
-                const newFreelancer = new freelancer({
+                const newFreelancer = new Freelancer({
                     'personal_details': {
                         'id': id + 1,
                         'first_name': req.body.first_name,
@@ -72,7 +73,7 @@ freeLancerDbController = {
     },
 
     deleteFreelancer(req, res) {
-        freelancer.deleteOne({ id: req.params.id })
+        Freelancer.deleteOne({ id: req.params.id })
             .then(docs => {
                 res.json(docs);
                 writeResponse(req, res);
@@ -84,9 +85,18 @@ freeLancerDbController = {
 
 
 const updateFreelancerHelper = (id, update) => {
-    return freelancer.findOneAndUpdate({ "personal_details.id": id }, update, { new: true, useFindAndModify: false })
+    return Freelancer.findOneAndUpdate({ "personal_details.id": id }, update, { new: true, useFindAndModify: false })
         .then(docs => { return docs })
         .catch(err => writeResponse(req, res, `At: updateFreelancerHelper, error wehile updating freelancer: ${err}`));
 }
 
-module.exports = { updateFreelancerHelper, freeLancerDbController }
+const getFreelancerByGoogle = async (id) => {
+    try {
+        let freelancer = await Freelancer.findOne({ "personal_details.google_id": id })
+        return freelancer
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+module.exports = { updateFreelancerHelper, getFreelancerByGoogle, freeLancerDbController }

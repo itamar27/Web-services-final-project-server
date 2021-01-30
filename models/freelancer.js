@@ -4,17 +4,18 @@ const personalDetails = require('./personalDetails')
 const skillsSchema = new Schema({
     work_experience: { type: Number },
     work_history: { type: String },
-    programming_languages: [{ type: String, required: true }],
-    work_fields: [{ type: String, required: true }]
+    programming_languages: [{ type: String }],
+    work_fields: [{ type: String }]
 })
 
 const freelancerSchema = new Schema({
-    personal_details: { type: personalDetails, required: true },
+    personal_details: { type: personalDetails },
     description: { type: String },
-    skills: { type: skillsSchema, required: true },
+    skills: { type: skillsSchema },
     jobs_id: [{ type: Number }]
 }, { collection: 'freelancers' });
 
-const freelancer = model('freelancer', freelancerSchema);
+const Freelancer = model('freelancer', freelancerSchema);
 
-module.exports = freelancer;
+module.exports = Freelancer;
+
