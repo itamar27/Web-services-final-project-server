@@ -51,6 +51,23 @@ const customerDbController = {
 
                 newCustomer.save()
                     .then((response) => {
+                        // same as freelancer, chaek if wotking
+                        req.session.user = {
+                            'personal_details': {
+                                'id': lastCostumer.personal_details.id + 1,
+                                'first_name': req.body.first_name,
+                                'last_name': req.body.last_name,
+                                'email': req.body.email,
+                                'address': req.body.address,
+                                'phone': req.body.phone,
+                                'linkedin': req.body.linkedin,
+                                'facebook': req.body.facebook,
+
+                            },
+                            "freelancer_api_id": req.body.freelancer_api_id,
+                            "freelancer_api_username": req.body.freelancer_api_username,
+                            'jobs_id': []
+                        }
                         res.json(response);
                         writeResponse(req, res);
                     })
