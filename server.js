@@ -9,30 +9,43 @@ const { jobRouter } = require('./routers/job.router');
 const { authRouter } = require('./routers/auth.router');
 const { writeRequest } = require('./logs/logs');
 
-const cors = require('cors')
-const cookieParser = require('cookie-parser')
-// const session = require('express-session');
+const cors = require('cors');
+const authMiddle = require('./middleware/auth');
 
-const authMiddle = require('./middleware/auth')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use(cookieParser())
-
-// app.use(session({
-//     resave: true,
-//     saveUninitialized: true,
-//     secret: 'milky is the collest dog ever!'
-// }))
-
 app.use(cors({ origin: true, credentials: true }))
+
+
+// *****  session related *******
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const mongoose = require('./db_connection')
+
+const sessionStore = new MongoStore({
+    mongooseConnection: mongoose.connection,
+    collection: 'sessions',
+    ttl: 1000 * 60 * 60 * 24
+})
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: sessionStore,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24,// Equals 1 day (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
+        secure: false
+    }
+}));
+// *****  session related *******
+
 
 app.all('*', (req, res, next) => {
     writeRequest(req);
     next();
 })
-
 
 app.use('/auth', authRouter)
 

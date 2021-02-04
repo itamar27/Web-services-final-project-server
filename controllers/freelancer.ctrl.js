@@ -48,6 +48,28 @@ freeLancerDbController = {
 
                 newFreelancer.save()
                     .then(response => {
+
+                        // if not working need to add anither call to get actual user
+                        req.session.user = {
+                            'personal_details': {
+                                'id': id + 1,
+                                'first_name': req.body.first_name,
+                                'last_name': req.body.last_name,
+                                'email': req.body.email,
+                                'address': req.body.address,
+                                'phone': req.body.phone,
+                                'linkedin': req.body.linkedin,
+                                'facebook': req.body.facebook
+                            },
+                            'skills': {
+                                'work_experience': req.body.work_experience,
+                                'work_history': req.body.work_history,
+                                'programming_languages': req.body.work_fields,
+                                'work_fields': req.body.work_fields
+                            },
+                            'jobs': [],
+                        }
+
                         res.json(response);
                         writeResponse(req, res);
                     })
@@ -98,5 +120,6 @@ const getFreelancerByGoogle = async (id) => {
         console.log(err);
     }
 }
+
 
 module.exports = { updateFreelancerHelper, getFreelancerByGoogle, freeLancerDbController }

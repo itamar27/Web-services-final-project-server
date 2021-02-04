@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-const consts = require('./constants');
-const { DB_HOST, DB_USER, DB_PASS } = consts;
-const url = DB_HOST;
+const { DB_HOST, DB_USER, DB_PASS } = require('./constants');
 
 const options = {
     useNewUrlParser: true,
@@ -12,6 +10,8 @@ const options = {
 };
 
 mongoose
-    .connect(url, options)
+    .connect(DB_HOST, options)
     .then(() => console.log('connected to DB'))
     .catch(err => console.log(`connection error: ${err}`));
+
+module.exports = mongoose

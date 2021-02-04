@@ -5,11 +5,11 @@ const constants = require('../constants');
 
 const customerRouter = new Router();
 
-customerRouter.get('/', customerDbController.getCustomers);
-customerRouter.get('/:id', customerDbController.getCustomer);
-customerRouter.post('/', customerDbController.addCustomer);
-customerRouter.put('/:id', customerDbController.updateCustomer);
-customerRouter.delete('/:id', customerDbController.deleteCustomer);
+customerRouter.get('/', customerDbController.getCustomers);     // in use? cant protect
+customerRouter.get('/:id', auth.checkIfSelf, customerDbController.getCustomer);
+customerRouter.post('/', customerDbController.addCustomer);     // cant protect
+customerRouter.put('/:id', auth.checkIfSelf, customerDbController.updateCustomer);
+customerRouter.delete('/:id', auth.checkIfSelf, customerDbController.deleteCustomer);
 
 
 
