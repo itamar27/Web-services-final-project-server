@@ -51,8 +51,10 @@ const customerDbController = {
 
                 newCustomer.save()
                     .then((response) => {
+ repairs
                         req.session.user = response
                         res.json(req.session.user);
+
                         writeResponse(req, res);
                     })
                     .catch((err) => { responseBadRequest(req, res, `Error saving a new customer + ${err}`); })
