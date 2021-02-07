@@ -1,4 +1,5 @@
 const Customer = require('../models/customer');
+const { getFreelancerApiId } = require('../controllers/freelancerApi.ctrl');
 const { processBody, responseBadRequest, writeResponse } = require('./helper.ctrl');
 
 
@@ -30,44 +31,30 @@ const customerDbController = {
 
     addCustomer(req, res) {
         Customer.findOne({}).sort({ _id: -1 }).limit(1)
-            .then((lastCostumer) => {
-
+            .then(async (lastCostumer) => {
+                const freelancer_api_id =await  getFreelancerApiId('ItaPita27');
+                console.log(freelancer_api_id);
                 const newCustomer = new Customer({
                     'personal_details': {
                         'id': lastCostumer.personal_details.id + 1,
                         'first_name': req.body.first_name,
                         'last_name': req.body.last_name,
                         'email': req.body.email,
-                        'address': req.body.address,
-                        'phone': req.body.phone,
                         'linkedin': req.body.linkedin,
                         'facebook': req.body.facebook,
 
                     },
-                    "freelancer_api_id": req.body.freelancer_api_id,
-                    "freelancer_api_username": req.body.freelancer_api_username,
+                    "freelancer_api_id": freelancer_api_id,
+                    "freelancer_api_username":'ItaPita27',
                     'jobs_id': []
                 })
 
                 newCustomer.save()
                     .then((response) => {
-                        // same as freelancer, chaek if wotking
-                        req.session.user = {
-                            'personal_details': {
-                                'id': lastCostumer.personal_details.id + 1,
-                                'first_name': req.body.first_name,
-                                'last_name': req.body.last_name,
-                                'email': req.body.email,
-                                'address': req.body.address,
-                                'phone': req.body.phone,
-                                'linkedin': req.body.linkedin,
-                                'facebook': req.body.facebook,
-                            },
-                            "freelancer_api_id": req.body.freelancer_api_id,
-                            "freelancer_api_username": req.body.freelancer_api_username,
-                            'jobs_id': []
-                        }
-                        res.json(response);
+ repairs
+                        req.session.user = response
+                        res.json(req.session.user);
+
                         writeResponse(req, res);
                     })
                     .catch((err) => { responseBadRequest(req, res, `Error saving a new customer + ${err}`); })
@@ -93,6 +80,52 @@ const customerDbController = {
     },
 };
 
+// const helperAdding = (req,res) => {
+//     Customer.findOne({}).sort({ _id: -1 }).limit(1)
+//     .then(async (lastCostumer) => {
+//         const freelancer_api_id = await getFreelancerApiId('ItaPita27');
+//         const newCustomer = new Customer({
+//             'personal_details': {
+//                 'id': lastCostumer.personal_details.id + 1,
+//                 'first_name': req.body.first_name,
+//                 'last_name': req.body.last_name,
+//                 'email': req.body.email,
+//                 'address': req.body.address,
+//                 'phone': req.body.phone,
+//                 'linkedin': req.body.linkedin,
+//                 'facebook': req.body.facebook,
+
+//             },
+//             "freelancer_api_id": freelancer_api_id,
+//             "freelancer_api_username": req.body.freelancer_api_username,
+//             'jobs_id': []
+//         })
+
+//         newCustomer.save()
+//             .then((response) => {
+//                 req.session.user = {
+//                     'personal_details': {
+//                         'id': lastCostumer.personal_details.id + 1,
+//                         'first_name': req.body.first_name,
+//                         'last_name': req.body.last_name,
+//                         'email': req.body.email,
+//                         'address': req.body.address,
+//                         'phone': req.body.phone,
+//                         'linkedin': req.body.linkedin,
+//                         'facebook': req.body.facebook,
+
+//                     },
+//                     "freelancer_api_id": req.body.freelancer_api_id,
+//                     "freelancer_api_username": req.body.freelancer_api_username,
+//                     'jobs_id': []
+//                 }
+//                 res.json(req.session.user);
+//                 writeResponse(req, res);
+//             })
+//             .catch((err) => { responseBadRequest(req, res, `Error saving a new customer + ${err}`); })
+//     }).catch((err) => { responseBadRequest(req, res, `Error finding last customer id + ${err}`); })
+// };
+
 const convertId = (id) => {
     return Customer.findOne({ freelancer_api_id: id })
         .then(docs => { return docs.personal_details.id })
@@ -112,6 +145,8 @@ const updateCutomerHelper = (id, update) => {
         .then(docs => { return docs })
         .catch(err => writeResponse(req, res, `At: updateCutomerHelper , error wehile updating customer: ${err}`));
 }
+
+
 
 const writeCommentsBack = async (id, comments) => {
     try {

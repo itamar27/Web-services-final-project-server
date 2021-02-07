@@ -31,8 +31,6 @@ freeLancerDbController = {
                         'id': id + 1,
                         'first_name': req.body.first_name,
                         'last_name': req.body.last_name,
-                        'email': req.body.email,
-                        'address': req.body.address,
                         'phone': req.body.phone,
                         'linkedin': req.body.linkedin,
                         'facebook': req.body.facebook
@@ -48,28 +46,8 @@ freeLancerDbController = {
 
                 newFreelancer.save()
                     .then(response => {
-
-                        // if not working need to add anither call to get actual user
-                        req.session.user = {
-                            'personal_details': {
-                                'id': id + 1,
-                                'first_name': req.body.first_name,
-                                'last_name': req.body.last_name,
-                                'email': req.body.email,
-                                'address': req.body.address,
-                                'phone': req.body.phone,
-                                'linkedin': req.body.linkedin,
-                                'facebook': req.body.facebook
-                            },
-                            'skills': {
-                                'work_experience': req.body.work_experience,
-                                'work_history': req.body.work_history,
-                                'programming_languages': req.body.work_fields,
-                                'work_fields': req.body.work_fields
-                            },
-                            'jobs': [],
-                        }
-
+                        // if not working need to add anither call to get actual user ----> get off before production
+                        req.session.user = response
                         res.json(response);
                         writeResponse(req, res);
                     })
@@ -87,11 +65,6 @@ freeLancerDbController = {
                 writeResponse(req, res);
             })
             .catch(err => responseBadRequest(req, res, `At: updateFreeLancer, error wehile updating freelancer: ${err}`));
-
-
-        // freelancer.findOneAndUpdate({ "personal_details.id": req.params.id }, update, { new: true, useFindAndModify: false })
-        //     .then(docs => { res.json(docs) })
-        //     .catch(err => console.log(`At: updateFreeLancer, error ehile updating freelancer: ${err}`))
     },
 
     deleteFreelancer(req, res) {

@@ -1,5 +1,3 @@
-
-
 const freelancerCtrl = require('../controllers/freelancer.ctrl');
 const customerCtrl = require('../controllers/customer.ctrl');
 
@@ -15,7 +13,7 @@ const findByGoogle = async (req, cookie) => {
     // if user defined we found a costumer matching, move to next 
     if (user) {
         req.user = user;
-        req.role = constants.COSTUMER
+        req.role = constants.CUSTOMER;
     }
     else {
         user = await freelancerCtrl.getFreelancerByGoogle(cookie);
