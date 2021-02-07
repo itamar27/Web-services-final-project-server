@@ -40,7 +40,7 @@ const getDataFromFreelancer = (url, query, req, res) => {
 }
 
 
-exports.freelancerApiController = {
+const freelancerApiController = {
     async getProjects(req, res) {
         let jobs = Array();
         const url = 'https://www.freelancer.com/api/projects/0.1/projects/?compact=true&full_description=true&languages[]=en&job_details=true';
@@ -84,7 +84,21 @@ exports.freelancerApiController = {
         } catch (err) {
             res.send(err);
         }
-    }
+    },
+}
+
+const getFreelancerApiId = (username) => {
+
+    let freelancerId = 666;
+    let query = `https://www.freelancer.com/api/users/0.1/users?usernames[]=${username}`;
+
+    return axios.get(query, { withCredentials: true, credentials: 'include' }).
+        then(response => {
+            freelancerId = parseInt(Object.keys(response.data.result.users)[0]);
+            return freelancerId;
+
+        }).catch(err => console.log(err));
+
 }
 
 
@@ -96,7 +110,7 @@ const persistJobOffers = async (id, jobs) => {
             comments: job.comments
         })
     })
-    writeCommentsBack(id, retComments);
+    await writeCommentsBack(id, retComments);
 }
 
 
@@ -115,6 +129,7 @@ const generateJobOffers = (offers) => {
     return jobs
 }
 
+module.exports = { freelancerApiController, getFreelancerApiId }
 
 // getProjects(req, res) {
 //     const url = 'https://www.freelancer.com/api/projects/0.1/projects/?compact=true&full_description=true&languages[]=en&job_details=true';
