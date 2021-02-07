@@ -62,40 +62,6 @@ exports.jobDbController = {
             .catch((err) => { responseBadRequest(req, res, `At: addJob, error getting last job id: ${err}`); });
     },
 
-    // async addJob(req, res) {
-    //     Job.findOne({}).sort({ _id: -1 }).limit(1)
-    //         .then((lastJob) => {
-    //             convertId(req.body.owner_id)
-    //                 .then((serverId) => {
-    //                     const newJob = new Job({
-    //                         "id": lastJob.id + 1,
-    //                         "project_name": req.body.project_name,
-    //                         "price": req.body.price,
-    //                         "start_date": req.body.start_date,
-    //                         "customer_id": serverId,
-    //                         "deadline": req.body.deadline,
-    //                         "goals": req.body.goals
-    //                     });
-
-    //                     newJob.save()
-    //                         .then((result) => {
-    //                             updateFreelancerHelper(req.body.freelancer_id, { "$push": { "jobs_id": result.id } })
-    //                                 .then(() => {
-    //                                     updateCutomerHelper(result.customer_id, { "$push": { "jobs_id": result.id } })
-    //                                         .then(() => {
-    //                                             res.json(result);
-    //                                             writeResponse(req, res);
-    //                                         })
-    //                                         .catch(err => { responseBadRequest(req, res, `At: addJob, error updating customer: ${err}`); });
-    //                                 })
-    //                                 .catch(err => { responseBadRequest(req, res, `At: addJob, error updating freelancer: ${err}`); });
-    //                         })
-    //                         .catch((err) => { responseBadRequest(req, res, `At: addJob, error saving a new job: ${err}`); });
-    //                 })
-    //                 .catch((err) => { responseBadRequest(req, res, `At: addJob, error getting server id for costumer: ${err}`); });
-    //         })
-    //         .catch((err) => { responseBadRequest(req, res, `At: addJob, error getting last job id: ${err}`); });
-    // },
 
     updateJob(req, res) {
         const update = processBody(req.body);

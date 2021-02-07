@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const Auth = require('../middleware/auth')
+const { customerDbController } = require('../controllers/customer.ctrl')
 
 const authRouter = new Router()
 
@@ -50,6 +51,15 @@ authRouter.post('/login', async (req, res) => {
     } catch (err) {
         console.log(err);
     }
+})
+
+authRouter.post('/signup', (req, res) => {
+    if (req.body.skills) {
+        // call feelancer add
+    }
+    else
+        customerDbController.addCustomer(req, res);
+
 })
 
 // authRouter.get('/login', async (req, res) => {

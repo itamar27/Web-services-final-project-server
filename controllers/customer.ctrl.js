@@ -62,7 +62,6 @@ const customerDbController = {
                                 'phone': req.body.phone,
                                 'linkedin': req.body.linkedin,
                                 'facebook': req.body.facebook,
-
                             },
                             "freelancer_api_id": req.body.freelancer_api_id,
                             "freelancer_api_username": req.body.freelancer_api_username,
