@@ -60,6 +60,7 @@ const customerDbController = {
                             role : req.session.user.role,
                         }
                         res.json(user);
+
                         writeResponse(req, res);
                     })
                     .catch((err) => { responseBadRequest(req, res, `Error saving a new customer + ${err}`); })
