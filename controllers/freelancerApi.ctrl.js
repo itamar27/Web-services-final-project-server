@@ -89,7 +89,6 @@ const freelancerApiController = {
 
 const getFreelancerApiId = (username) => {
 
-    let freelancerId = 666;
     let query = `https://www.freelancer.com/api/users/0.1/users?usernames[]=${username}`;
 
     return axios.get(query, { withCredentials: true, credentials: 'include' }).

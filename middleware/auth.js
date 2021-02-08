@@ -12,14 +12,12 @@ const findByGoogle = async (req, cookie) => {
 
     // if user defined we found a costumer matching, move to next 
     if (user) {
-        req.user = user;
-        req.role = constants.CUSTOMER;
+        user.role = constants.CUSTOMER;
     }
     else {
         user = await freelancerCtrl.getFreelancerByGoogle(cookie);
         if (user) {
-            req.user = user;
-            req.role = constants.FREELANCER
+            user.role = constants.FREELANCER;
         }
         else
             return null

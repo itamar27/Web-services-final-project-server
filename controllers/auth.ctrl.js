@@ -1,6 +1,6 @@
 const { FREELANCER, CUSTOMER } = require('../constants');
 const freeLancerDbController = require('../controllers/freelancer.ctrl');
-const {customerDbController } = require('../controllers/customer.ctrl');
+const { customerDbController } = require('../controllers/customer.ctrl');
 const { responseBadRequest, writeResponse } = require('./helper.ctrl');
 
 const Auth = require('../middleware/auth');
@@ -38,12 +38,8 @@ exports.authController = {
                 req.session.user = localUser;
 
                 if (localUser) {
-                    url = '/';
-                    if (localuser.skills)
-                        user.role = FREELANCER;
-                    else
-                        user.role = CUSTOMER;
-
+                    url = `/${user.first_name}`;
+                    user.role = localuser.role;
                     res.json({ user, url })
                     writeResponse(req, res);
                 }  // user tried to login and exisit in db so all good
@@ -76,7 +72,7 @@ exports.authController = {
             await freeLancerDbController.addFreelancer;
         }
         else {
-            await customerDbController.addCustomer(req,res);
+            await customerDbController.addCustomer(req, res);
         }
 
 
