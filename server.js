@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 
+const { commentsRouter } = require('./routers/comments.router');
 const { freelancerRouter } = require('./routers/freelancer.router');
 const { customerRouter } = require('./routers/customer.router');
 const { freelancerApiRouter } = require('./routers/freelancerApi.router');
@@ -51,6 +52,7 @@ app.use('/auth', authRouter)
 
 app.use(authMiddle.checkAuthenticated)
 
+app.use('/api/comments',commentsRouter )
 app.use('/api/freelancers', freelancerRouter);
 app.use('/api/customers', customerRouter);
 app.use('/api/freelancerApi', freelancerApiRouter);

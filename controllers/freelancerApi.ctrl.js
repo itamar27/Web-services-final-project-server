@@ -52,7 +52,7 @@ const freelancerApiController = {
 
             let offers = await axios.get(url + query)
             jobs = generateJobOffers(offers);
-
+            
             res.json(jobs);
             writeResponse(req, res);
         } catch (err) {
