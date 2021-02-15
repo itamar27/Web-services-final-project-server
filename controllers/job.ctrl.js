@@ -7,7 +7,7 @@ const { updateFreelancerHelper } = require('./freelancer.ctrl');
 exports.jobDbController = {
 
     async getJobs(req, res) {
-        req.session.user = req.user
+        // req.session.user = req.user
 
         Job.find({})
             .then(docs => {

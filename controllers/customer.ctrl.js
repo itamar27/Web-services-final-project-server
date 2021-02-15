@@ -1,7 +1,7 @@
 const Customer = require('../models/customer');
 const { getFreelancerApiId } = require('../controllers/freelancerApi.ctrl');
 const { processBody, responseBadRequest, writeResponse } = require('./helper.ctrl');
-const {CUSTOMER} = require('../constants');
+const { CUSTOMER } = require('../constants');
 
 const customerDbController = {
 
@@ -29,42 +29,57 @@ const customerDbController = {
     },
 
 
-    addCustomer(req, res) {
-        Customer.findOne({}).sort({ _id: -1 }).limit(1)
-            .then(async (lastCostumer) => {
-                const freelancer_api_id =await  getFreelancerApiId(req.body.freelancer_api_name);
-                console.log(freelancer_api_id);
-                const newCustomer = new Customer({
-                    'personal_details': {
-                        'id': lastCostumer.personal_details.id + 1,
-                        'first_name': req.body.firstName,
-                        'last_name': req.body.lastName,
-                        'email': req.body.email,
-                        'linkedin': req.body.linkedin,
-                        'facebook': req.body.facebook,
+    async addCustomer(req, res) {
+        let lastId = 0;
+        try {
+            lastCostumer = await Customer.findOne({}).sort({ _id: -1 }).limit(1);
+            lastId = lastCostumer.personal_details.id;
+        } catch (err) {
+            //   handle later
+        }
 
-                    },
-                    "freelancer_api_id": freelancer_api_id,
-                    "freelancer_api_username":req.body.freelancer_api_name,
-                    'jobs_id': []
+        let newCustomer;
+        try {
+            const freelancer_api_id = await getFreelancerApiId(req.body.freelancer_api_name);
+            newCustomer = new Customer({
+                'personal_details': {
+                    'id': lastId + 1,
+                    'google_id': req.body.google_id,
+                    'first_name': req.body.firstName,
+                    'last_name': req.body.lastName,
+                    'email': req.body.email,
+                    'linkedin': req.body.linkedin,
+                    'facebook': req.body.facebook,
+
+                },
+                "freelancer_api_id": freelancer_api_id,
+                "freelancer_api_username": req.body.freelancer_api_name,
+                'jobs_id': []
+            })
+        } catch (err) {
+            responseBadRequest(req, res, `Error saving a new customer + ${err}`);
+        }
+
+        if (newCustomer) {
+            newCustomer.save()
+                .then((response) => {
+                    req.session.user = response;
+                    req.session.user.role = CUSTOMER;
+                    const user = {
+                        id: req.session.user.personal_details.id,
+                        first_name: req.session.user.personal_details.first_name,
+                        last_name: req.session.user.personal_details.last_name,
+                        email: req.session.user.personal_details.email,
+                        role: req.session.user.role,
+                        apiName: req.session.user.freelancer_api_username,
+
+                    }
+                    res.json(user);
+                    writeResponse(req, res);
                 })
+                .catch((err) => { responseBadRequest(req, res, `Error saving a new customer + ${err}`); })
+        }
 
-                newCustomer.save()
-                    .then((response) => {
-                        req.session.user = response;
-                        req.session.user.role = CUSTOMER;
-                        const user = {
-                            first_name : req.session.user.personal_details.first_name,
-                            last_name: req.session.user.personal_details.last_name,
-                            email : req.session.user.personal_details.email,
-                            role : req.session.user.role,
-                        }
-                        res.json(user);
-
-                        writeResponse(req, res);
-                    })
-                    .catch((err) => { responseBadRequest(req, res, `Error saving a new customer + ${err}`); })
-            }).catch((err) => { responseBadRequest(req, res, `Error finding last customer id + ${err}`); })
 
     },
 

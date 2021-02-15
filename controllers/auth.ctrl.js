@@ -38,8 +38,8 @@ exports.authController = {
                 req.session.user = localUser;
 
                 if (localUser) {
-                    url = `/${user.first_name}`;
-                    user.role = localuser.role;
+                    url = `user/${localUser.personal_details.first_name}_${localUser.personal_details.last_name}`;
+                    user.role = localUser.role;
                     res.json({ user, url })
                     writeResponse(req, res);
                 }  // user tried to login and exisit in db so all good

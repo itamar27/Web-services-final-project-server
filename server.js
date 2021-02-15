@@ -39,7 +39,7 @@ app.use(session({
         secure: false
     }
 }));
-// *****  session related *******
+// ***** session related *******
 
 
 app.all('*', (req, res, next) => {
