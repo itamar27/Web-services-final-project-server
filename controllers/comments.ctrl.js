@@ -2,10 +2,9 @@ const { FREELANCER, CUSTOMER } = require('../constants');
 const Comments = require('../models/comments')
 const { responseBadRequest, writeResponse } = require('./helper.ctrl');
 
-
 const addComment = async (offer, userId) => {
     const comment = new Comments({
-        cutomer_id: userId,
+        customer_id: userId,
         offer_id: offer.project_id,
         comment: "",
         active: false
@@ -17,17 +16,14 @@ const addComment = async (offer, userId) => {
 
 const updateComments = async (userId, apiOffers) => {
     try {
-        jobOffers = await Comments.find({ 'cutomer_id': userId });
-
-        // console.log(jobOffers);
-        // console.log(apiOffers);
+        jobOffers = await Comments.find({ 'customer_id': userId });
 
         for (let j = 0; j < apiOffers.length; j++) {
             let notInList = true;
-
-            for (let i = 0; i < jobOffers.length; i++)
+            for (let i = 0; i < jobOffers.length; i++) {
                 if (jobOffers[i].offer_id == apiOffers[j].project_id)
                     notInList = false;
+            }
 
             if (notInList) {
                 try {
@@ -44,14 +40,19 @@ const updateComments = async (userId, apiOffers) => {
 }
 
 
-
-
 const getComments = async (userId) => {
-    return await Comments.find({ 'cutomer_id': userId })
+    return await Comments.find({ 'customer_id': userId })
         .then((offers) => {
             return offers.filter(offer => offer.active == false);
         })
         .catch((err) => { throw err });
 }
 
-module.exports = { getComments, addComment, updateComments }
+const updateComment = async (req, res) => {
+    Comments.findOneAndUpdate({ "project_id": req.id }, { 'comment': req.body.comment }, { new: true, useFindAndModify: false })
+        .then(docs => { res.json(docs) })
+        .catch(err => writeResponse(req, res, `At: updateComments , error while updating comments: ${err}`));
+}
+
+
+module.exports = { getComments, addComment, updateComments, updateComment }

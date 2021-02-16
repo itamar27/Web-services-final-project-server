@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 
 const commentsSchema = new Schema({
-    cutomer_id: { type: Number },
+    customer_id: { type: Number },
     offer_id: { type: Number },
     comment: { type: String },
     active: { type: Boolean }

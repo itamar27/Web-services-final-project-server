@@ -40,6 +40,7 @@ exports.authController = {
                 if (localUser) {
                     url = `user/${localUser.personal_details.first_name}_${localUser.personal_details.last_name}`;
                     user.role = localUser.role;
+                    req.session.user.role = localUser.role;
                     res.json({ user, url })
                     writeResponse(req, res);
                 }  // user tried to login and exisit in db so all good
@@ -74,7 +75,19 @@ exports.authController = {
         else {
             await customerDbController.addCustomer(req, res);
         }
+    },
 
-
+    getCredentials(req,res){
+        const tmpUser = req.session.user;
+        console.log(tmpUser);
+        const user = {
+            id: tmpUser.personal_details.id,
+            first_name: tmpUser.personal_details.first_name,
+            last_name: tmpUser.personal_details.last_name,
+            email: tmpUser.personal_details.email,
+            role : tmpUser.role
+        }
+        console.log(user);
+        res.json(user);
     }
 } 
