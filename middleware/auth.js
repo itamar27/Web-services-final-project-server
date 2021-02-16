@@ -8,7 +8,7 @@ const constants = require('../constants')
 
 const findByGoogle = async (req, cookie) => {
     let user = null;
-    user = await customerCtrl.getCostumerByGoogle(cookie);
+    user = await customerCtrl.getCustomerByGoogle(cookie);
 
     // if user defined we found a costumer matching, move to next 
     if (user) {
@@ -38,11 +38,10 @@ const checkAuthenticated = async (req, res, next) => {
 
 const checkRole = (role) => {
     return (req, res, next) => {
-        if (req.role != role) {
-            res.send("not allowd")
+        if (req.session.role != role) {
+            res.send("not allowed");
         }
         else {
-            console.log("allowed");
             next()
         }
     }
@@ -52,11 +51,11 @@ const checkJobOwnership = (req, res, next) => {
 
     let ownedJobs = null
     let allowed = false
-    if (req.role === constants.FREELANCER)
-        ownedJobs = req.session.user.jobs
+    if (req.session.role === constants.FREELANCER)
+        ownedJobs = req.session.user.jobs_id
 
-    else if (req.role === constants.COSTUMER)
-        ownedJobs = req.user.jobs_id
+    else if (req.session.role === constants.COSTUMER)
+        ownedJobs = req.session.user.jobs_id
 
     ownedJobs.forEach((job) => {
         if (job.toString() === req.params.id)

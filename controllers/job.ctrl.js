@@ -1,7 +1,10 @@
 const Job = require('../models/job');
 const { processBody, responseBadRequest, writeResponse } = require('./helper.ctrl');
-const { convertId, updateCutomerHelper } = require('./customer.ctrl');
+const { convertId, updateCustomerHelper } = require('./customer.ctrl');
 const { updateFreelancerHelper } = require('./freelancer.ctrl');
+const {updateCommentStatus} = require('./comments.ctrl');
+const moment = require('moment');
+
 
 
 exports.jobDbController = {
@@ -27,28 +30,29 @@ exports.jobDbController = {
     },
 
     async addJob(req, res) {
-
         Job.findOne({}).sort({ _id: -1 }).limit(1)
             .then((lastJob) => {
                 convertId(req.body.owner_id)
                     .then((serverId) => {
                         const newJob = new Job({
                             "id": lastJob.id + 1,
+                            "description" : req.body.description,
                             "project_name": req.body.project_name,
                             "price": req.body.price,
-                            "start_date": req.body.start_date,
+                            "start_date": moment().format('MM/DD/YYYY'),
                             "customer_id": serverId,
                             "deadline": req.body.deadline,
                             "goals": req.body.goals
                         });
-
                         newJob.save()
                             .then((result) => {
-                                updateFreelancerHelper(req.body.freelancer_id, { "$push": { "jobs_id": result.id } })
+
+                                updateFreelancerHelper(req.session.user.personal_details.id, { "$push": { "jobs_id": result.id } })
                                     .then(() => {
-                                        updateCutomerHelper(result.customer_id, { "$push": { "jobs_id": result.id } })
+                                        updateCustomerHelper(result.customer_id, { "$push": { "jobs_id": result.id } })
                                             .then(() => {
-                                                res.json(result);
+                                                updateCommentStatus(req,res,req.body.projectId,  true);
+                                                res.json(result.id);
                                                 writeResponse(req, res);
                                             })
                                             .catch(err => { responseBadRequest(req, res, `At: addJob, error updating customer: ${err}`); });

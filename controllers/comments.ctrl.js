@@ -1,6 +1,7 @@
 const { FREELANCER, CUSTOMER } = require('../constants');
 const Comments = require('../models/comments')
 const { responseBadRequest, writeResponse } = require('./helper.ctrl');
+const { getAllCustomers, convertId } = require('./customer.ctrl');
 
 const addComment = async (offer, userId) => {
     const comment = new Comments({
@@ -27,7 +28,9 @@ const updateComments = async (userId, apiOffers) => {
 
             if (notInList) {
                 try {
-                    await addComment(apiOffers[j], userId);
+                    if(userId)
+                        await addComment(apiOffers[j], userId);
+
                 } catch (err) {
                     throw err;
                 }
@@ -37,6 +40,29 @@ const updateComments = async (userId, apiOffers) => {
         console.log(err);
     }
 
+}
+
+const updateAllComments = async (jobs, customersId) => {
+
+    try {
+
+        for (let i = 0; i < customersId.length; i++) {
+            const userJobs = jobs.filter((job) => job.owner_id=== customersId[i].freelancer_api_id);
+            await updateComments(customersId[i].personal_details.id,userJobs);
+        }
+
+    } catch (err) {
+        throw  err;
+    }
+
+}
+
+const getAllComments = async () => {
+    return await Comments.find({})
+        .then((offers) => {
+            return offers.filter(offer => offer.active == false);
+        })
+        .catch((err) => { throw err });
 }
 
 
@@ -54,5 +80,13 @@ const updateComment = async (req, res) => {
         .catch(err => writeResponse(req, res, `At: updateComments , error while updating comments: ${err}`));
 }
 
+const updateCommentStatus = (req,res,projectId, update)=>{ 
+    Comments.findOneAndUpdate({ "offer_id": projectId },{'active': update}, { new: true, useFindAndModify: false })
+    .then(docs => { return; })
+    .catch(err => writeResponse(req, res, `At: updateComments , error while updating comments: ${err}`));
+}
 
-module.exports = { getComments, addComment, updateComments, updateComment }
+
+
+
+module.exports = { updateCommentStatus, getComments, addComment, updateComments, updateComment, getAllComments, updateAllComments }

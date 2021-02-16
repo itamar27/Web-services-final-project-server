@@ -8,7 +8,7 @@ const freelancerApiRouter = new Router();
 
 // used to fetch specific projects
 freelancerApiRouter.get('/projects/user', freelancerApiController.getUserProjects);
-freelancerApiRouter.get('/projects', freelancerApiController.getProjects);
+freelancerApiRouter.get('/projects',freelancerApiController.getProjects);
 
 
 module.exports = { freelancerApiRouter }; 

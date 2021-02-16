@@ -1,5 +1,7 @@
 const Freelancer = require('../models/freelancer');
 const { processBody, responseBadRequest, writeResponse } = require('./helper.ctrl');
+const { FREELANCER } = require('../constants');
+
 
 freeLancerDbController = {
 
@@ -22,39 +24,61 @@ freeLancerDbController = {
     },
 
     async addFreelancer(req, res) {
-        Freelancer.findOne({}).sort({ _id: -1 }).limit(1)
+        let lastId = 0;
+        try {
+            lastFreelancer = await Freelancer.findOne({}).sort({ _id: -1 }).limit(1)
+            lastId = lastFreelancer.personal_details.id;
+        } catch (err) {
+            //   handle later
+        }
+      
+        let newFreelancer;
+        try {
 
-            .then(item => {
-                let id = item.personal_details.id;
-                const newFreelancer = new Freelancer({
-                    'personal_details': {
-                        'id': id + 1,
-                        'first_name': req.body.first_name,
-                        'last_name': req.body.last_name,
-                        'phone': req.body.phone,
-                        'linkedin': req.body.linkedin,
-                        'facebook': req.body.facebook
-                    },
-                    'skills': {
-                        'work_experience': req.body.work_experience,
-                        'work_history': req.body.work_history,
-                        'programming_languages': req.body.work_fields,
-                        'work_fields': req.body.work_fields // edit push
-                    },
-                    'jobs': [],
-                });
+            newFreelancer = new Freelancer({
+                'personal_details': {
+                    'id': lastId + 1,
+                    'google_id': req.body.google_id,
+                    'first_name': req.body.firstName,
+                    'last_name': req.body.lastName,
+                    'email': req.body.email,
+                    'linkedin': req.body.linkedin,
+                    'facebook': req.body.facebook,
+                },
+                'description': req.body.freelancer.description,
+                'skills': {
+                    'work_experience': req.body.freelancer.workExperience,
+                    'programming_languages': req.body.freelancer.programming,
+                    'work_fields': req.body.freelancer.workFields
+                },
+                ' jobs_id': [],
+            });
 
-                newFreelancer.save()
-                    .then(response => {
-                        // if not working need to add anither call to get actual user ----> get off before production
-                        req.session.user = response
-                        res.json(response);
-                        writeResponse(req, res);
-                    })
-                    .catch(err => { responseBadRequest(req, res, `Error saving a freelancer: + ${err}`) });
-            })
-            .catch(err => { responseBadRequest(req, res, `Error getting last freelancer id: + ${err}`) });
 
+        } catch (err) {
+            responseBadRequest(req, res, `Error getting last freelancer id: + ${err}`)
+        }
+
+        if (newFreelancer) {
+            newFreelancer.save()
+                .then(response => {
+                    req.session.user = response;
+                    req.session.role = FREELANCER;
+                    const user = {
+                        id: req.session.user.personal_details.id,
+                        first_name: req.session.user.personal_details.first_name,
+                        last_name: req.session.user.personal_details.last_name,
+                        email: req.session.user.personal_details.email,
+                        role: req.session.role,
+                        apiName: req.session.user.freelancer_api_username,
+
+                    }
+                    const url = '/job_offers';
+                    res.json({ user: user, url: url });
+                    writeResponse(req, res);
+                })
+                .catch(err => { responseBadRequest(req, res, `Error saving a freelancer: + ${err}`) });
+        }
     },
 
     updateFreelancer(req, res) {
@@ -82,7 +106,7 @@ freeLancerDbController = {
 const updateFreelancerHelper = (id, update) => {
     return Freelancer.findOneAndUpdate({ "personal_details.id": id }, update, { new: true, useFindAndModify: false })
         .then(docs => { return docs })
-        .catch(err => writeResponse(req, res, `At: updateFreelancerHelper, error wehile updating freelancer: ${err}`));
+        .catch(err => writeResponse(req, res, `At: updateFreelancerHelper, error while updating freelancer: ${err}`));
 }
 
 const getFreelancerByGoogle = async (id) => {

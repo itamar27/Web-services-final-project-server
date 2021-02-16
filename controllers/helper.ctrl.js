@@ -1,4 +1,5 @@
 const { writeResponse } = require('../logs/logs.js');
+const axios = require('axios');
 
 
 const processBody = (data) => {
@@ -54,5 +55,18 @@ const responseBadRequest = (req, res, err) => {
     writeResponse(req, res, err);
 }
 
+const getFreelancerApiId = (username) => {
 
-module.exports = { writeResponse, processBody, responseBadRequest }
+    let query = `https://www.freelancer.com/api/users/0.1/users?usernames[]=${username}`;
+
+    return axios.get(query, { withCredentials: true, credentials: 'include' }).
+        then(response => {
+            freelancerId = parseInt(Object.keys(response.data.result.users)[0]);
+            return freelancerId;
+
+        }).catch(err => console.log(err));
+
+}
+
+
+module.exports = { writeResponse, processBody, responseBadRequest, getFreelancerApiId }

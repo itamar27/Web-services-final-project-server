@@ -1,7 +1,8 @@
 const Customer = require('../models/customer');
-const { getFreelancerApiId } = require('../controllers/freelancerApi.ctrl');
-const { processBody, responseBadRequest, writeResponse } = require('./helper.ctrl');
+const { processBody, responseBadRequest, writeResponse, getFreelancerApiId } = require('./helper.ctrl');
 const { CUSTOMER } = require('../constants');
+
+
 
 const customerDbController = {
 
@@ -35,7 +36,8 @@ const customerDbController = {
             lastCostumer = await Customer.findOne({}).sort({ _id: -1 }).limit(1);
             lastId = lastCostumer.personal_details.id;
         } catch (err) {
-            //   handle later
+
+            console.log(err);
         }
 
         let newCustomer;
@@ -64,17 +66,18 @@ const customerDbController = {
             newCustomer.save()
                 .then((response) => {
                     req.session.user = response;
-                    req.session.user.role = CUSTOMER;
+                    req.session.role = CUSTOMER;
                     const user = {
                         id: req.session.user.personal_details.id,
                         first_name: req.session.user.personal_details.first_name,
                         last_name: req.session.user.personal_details.last_name,
                         email: req.session.user.personal_details.email,
-                        role: req.session.user.role,
+                        role: req.session.role,
                         apiName: req.session.user.freelancer_api_username,
 
                     }
-                    res.json(user);
+                    const url = `/user/${user.first_name}_${user.last_name}`
+                    res.json({ user: user, url: url });
                     writeResponse(req, res);
                 })
                 .catch((err) => { responseBadRequest(req, res, `Error saving a new customer + ${err}`); })
@@ -86,12 +89,12 @@ const customerDbController = {
     updateCustomer(req, res) {
         const update = processBody(req.body);
 
-        updateCutomerHelper(req.params.id, update)
+        updateCustomerHelper(req.params.id, update)
             .then((response) => {
                 res.json(response);
                 writeResponse(req, res);
             })
-            .catch(err => responseBadRequest(req, res, `At: updateCustomer, error wehile updating customer: ${err}`));
+            .catch(err => responseBadRequest(req, res, `At: updateCustomer, error while updating customer: ${err}`));
     },
 
     deleteCustomer(req, res) {
@@ -101,52 +104,6 @@ const customerDbController = {
     },
 };
 
-// const helperAdding = (req,res) => {
-//     Customer.findOne({}).sort({ _id: -1 }).limit(1)
-//     .then(async (lastCostumer) => {
-//         const freelancer_api_id = await getFreelancerApiId('ItaPita27');
-//         const newCustomer = new Customer({
-//             'personal_details': {
-//                 'id': lastCostumer.personal_details.id + 1,
-//                 'first_name': req.body.first_name,
-//                 'last_name': req.body.last_name,
-//                 'email': req.body.email,
-//                 'address': req.body.address,
-//                 'phone': req.body.phone,
-//                 'linkedin': req.body.linkedin,
-//                 'facebook': req.body.facebook,
-
-//             },
-//             "freelancer_api_id": freelancer_api_id,
-//             "freelancer_api_username": req.body.freelancer_api_username,
-//             'jobs_id': []
-//         })
-
-//         newCustomer.save()
-//             .then((response) => {
-//                 req.session.user = {
-//                     'personal_details': {
-//                         'id': lastCostumer.personal_details.id + 1,
-//                         'first_name': req.body.first_name,
-//                         'last_name': req.body.last_name,
-//                         'email': req.body.email,
-//                         'address': req.body.address,
-//                         'phone': req.body.phone,
-//                         'linkedin': req.body.linkedin,
-//                         'facebook': req.body.facebook,
-
-//                     },
-//                     "freelancer_api_id": req.body.freelancer_api_id,
-//                     "freelancer_api_username": req.body.freelancer_api_username,
-//                     'jobs_id': []
-//                 }
-//                 res.json(req.session.user);
-//                 writeResponse(req, res);
-//             })
-//             .catch((err) => { responseBadRequest(req, res, `Error saving a new customer + ${err}`); })
-//     }).catch((err) => { responseBadRequest(req, res, `Error finding last customer id + ${err}`); })
-// };
-
 const convertId = (id) => {
     return Customer.findOne({ freelancer_api_id: id })
         .then(docs => { return docs.personal_details.id })
@@ -154,30 +111,21 @@ const convertId = (id) => {
 };
 
 
-const getAllCostumers = () => {
+const getAllCustomers = (req, res) => {
     return Customer.find({})
         .then(docs => { return docs })
-        .catch(err => writeResponse(req, res, `At: getAllCostumers, error retreiving data from DB: ${err}`));
+        .catch(err => writeResponse(req, res, `At: getAllCostumers, error retrieving data from DB: ${err}`));
 };
 
 
-const updateCutomerHelper = (id, update) => {
+const updateCustomerHelper = (id, update) => {
     return Customer.findOneAndUpdate({ "personal_details.id": id }, update, { new: true, useFindAndModify: false })
         .then(docs => { return docs })
-        .catch(err => writeResponse(req, res, `At: updateCutomerHelper , error wehile updating customer: ${err}`));
+        .catch(err => writeResponse(req, res, `At: updateCustomerHelper , error while updating customer: ${err}`));
 }
 
 
-
-const writeCommentsBack = async (id, comments) => {
-    try {
-        await Customer.findOneAndUpdate({ "personal_details.id": id }, { "job_offers": comments }, { new: true, useFindAndModify: false })
-    } catch (err) {
-        writeResponse(req, res, `At: updateCutomerHelper , error wehile updating customer: ${err}`)
-    }
-}
-
-const getCostumerByGoogle = async (id) => {
+const getCustomerByGoogle = async (id) => {
     try {
         let customer = await Customer.findOne({ "personal_details.google_id": id })
         return customer
@@ -189,4 +137,4 @@ const getCostumerByGoogle = async (id) => {
 
 
 
-module.exports = { updateCutomerHelper, getAllCostumers, convertId, getCostumerByGoogle, writeCommentsBack, customerDbController };
+module.exports = { updateCustomerHelper, getAllCustomers, convertId, getCustomerByGoogle, customerDbController };
