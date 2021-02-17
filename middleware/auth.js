@@ -54,7 +54,7 @@ const checkJobOwnership = (req, res, next) => {
     if (req.session.role === constants.FREELANCER)
         ownedJobs = req.session.user.jobs_id
 
-    else if (req.session.role === constants.COSTUMER)
+    else if (req.session.role === constants.CUSTOMER)
         ownedJobs = req.session.user.jobs_id
 
     ownedJobs.forEach((job) => {
