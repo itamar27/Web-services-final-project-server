@@ -7,6 +7,7 @@ const jobRouter = new Router();
 
 
 jobRouter.get('/', jobDbController.getJobs);
+jobRouter.get('/user/:id', jobDbController.getCustomerJobs);
 jobRouter.get('/:id', auth.checkJobOwnership, jobDbController.getJob);
 jobRouter.post('/', auth.checkRole(constants.FREELANCER), jobDbController.addJob);
 jobRouter.put('/:id', auth.checkJobOwnership, jobDbController.updateJob);
