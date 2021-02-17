@@ -46,7 +46,7 @@ const freelancerApiController = {
                         job.comment = offer.comment;
                         response.push(job);
                     }
-                   
+
                 })
             })
             res.json(response);
@@ -64,9 +64,13 @@ const freelancerApiController = {
 
         try {
             let offers = await axios.get(`https://www.freelancer.com/api/projects/0.1/projects/?compact=true&full_description=true&languages[]=en&job_details=true&owners[]=${user.freelancer_api_id}`)
+
             jobs = generateJobOffers(offers);
+
             await commentsController.updateComments(user.personal_details.id, jobs);
             filterdJobOffers = await commentsController.getComments(user.personal_details.id);
+
+
             let returnedJobs = []
             jobs.map((job) => {
                 filterdJobOffers.forEach((offer) => {
@@ -76,6 +80,8 @@ const freelancerApiController = {
                     }
                 })
             })
+
+            // console.log('filterd jobs:', returnedJobs);
             res.json(returnedJobs);
             writeResponse(req, res);
 

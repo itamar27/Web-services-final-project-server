@@ -28,7 +28,7 @@ const updateComments = async (userId, apiOffers) => {
 
             if (notInList) {
                 try {
-                    if(userId)
+                    if (userId)
                         await addComment(apiOffers[j], userId);
 
                 } catch (err) {
@@ -47,12 +47,12 @@ const updateAllComments = async (jobs, customersId) => {
     try {
 
         for (let i = 0; i < customersId.length; i++) {
-            const userJobs = jobs.filter((job) => job.owner_id=== customersId[i].freelancer_api_id);
-            await updateComments(customersId[i].personal_details.id,userJobs);
+            const userJobs = jobs.filter((job) => job.owner_id === customersId[i].freelancer_api_id);
+            await updateComments(customersId[i].personal_details.id, userJobs);
         }
 
     } catch (err) {
-        throw  err;
+        throw err;
     }
 
 }
@@ -75,15 +75,16 @@ const getComments = async (userId) => {
 }
 
 const updateComment = async (req, res) => {
-    Comments.findOneAndUpdate({ "project_id": req.id }, { 'comment': req.body.comment }, { new: true, useFindAndModify: false })
+    // console.log(req.params.id)
+    Comments.findOneAndUpdate({ "offer_id": req.params.id }, { 'comment': req.body.comment }, { new: true, useFindAndModify: false })
         .then(docs => { res.json(docs) })
         .catch(err => writeResponse(req, res, `At: updateComments , error while updating comments: ${err}`));
 }
 
-const updateCommentStatus = (req,res,projectId, update)=>{ 
-    Comments.findOneAndUpdate({ "offer_id": projectId },{'active': update}, { new: true, useFindAndModify: false })
-    .then(docs => { return; })
-    .catch(err => writeResponse(req, res, `At: updateComments , error while updating comments: ${err}`));
+const updateCommentStatus = (req, res, projectId, update) => {
+    Comments.findOneAndUpdate({ "offer_id": projectId }, { 'active': update }, { new: true, useFindAndModify: false })
+        .then(docs => { return; })
+        .catch(err => writeResponse(req, res, `At: updateComments , error while updating comments: ${err}`));
 }
 
 

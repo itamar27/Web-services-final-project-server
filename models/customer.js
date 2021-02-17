@@ -6,7 +6,6 @@ const customerSchema = new Schema({
     freelancer_api_id: { type: Number },
     freelancer_api_username: { type: String },
     jobs_id: [{ type: Number }],
-    job_offers: [{ type: Object }]
 
 }, { collection: 'customers' });
 
