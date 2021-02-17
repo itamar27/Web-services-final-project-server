@@ -10,7 +10,6 @@ const moment = require('moment');
 exports.jobDbController = {
 
     async getJobs(req, res) {
-        // req.session.user = req.user
 
         Job.find({})
             .then(docs => {
@@ -27,6 +26,27 @@ exports.jobDbController = {
                 writeResponse(req, res);
             })
             .catch(err => responseBadRequest(req, res, `At: getJob, Error getting data from db: ${err}`));
+    },
+
+    getCustomerJobs(req,res){
+        
+        Job.find({'customer_id': req.params.id})
+            .then(docs => {
+                let returnedJobs = []
+                docs.forEach(doc =>{ 
+                   const job = {
+                        project_id : doc.id, 
+                        title : doc.project_name,
+                        description : doc.description,
+                        price: doc.price,
+                        owner_id: doc.customer_id,
+                    }
+                    returnedJobs.push(job);
+                })
+                res.json(returnedJobs);
+                writeResponse(req, res);
+            })
+            .catch(err => responseBadRequest(req, res, `Error getting jobs data from db: ${err}`));
     },
 
     async addJob(req, res) {
