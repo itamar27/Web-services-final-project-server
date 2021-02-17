@@ -1,8 +1,7 @@
 const { FREELANCER, CUSTOMER } = require('../constants');
-const freeLancerDbController = require('../controllers/freelancer.ctrl');
+const { freeLancerDbController } = require('../controllers/freelancer.ctrl');
 const { customerDbController } = require('../controllers/customer.ctrl');
 const { responseBadRequest, writeResponse } = require('./helper.ctrl');
-
 const Auth = require('../middleware/auth');
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.CLIENT_ID);
@@ -36,11 +35,17 @@ exports.authController = {
             if (user) {
                 const localUser = await Auth.findByGoogle(req, user.id);
                 req.session.user = localUser;
-
                 if (localUser) {
-                    url = `user/${localUser.personal_details.first_name}_${localUser.personal_details.last_name}`;
+
                     user.role = localUser.role;
-                    req.session.user.role = localUser.role;
+                    if (user.role === 'customer')
+                        url = `user/${localUser.personal_details.first_name}_${localUser.personal_details.last_name}`;
+                    else
+                        url = `job_offers`;
+
+                    req.session.role = localUser.role;
+                    user.first_name = localUser.personal_details.first_name;
+                    user.last_name = localUser.personal_details.last_name;
                     res.json({ user, url })
                     writeResponse(req, res);
                 }  // user tried to login and exisit in db so all good
@@ -63,21 +68,21 @@ exports.authController = {
 
     async logout(req, res) {
         res.clearCookie('connect.sid');
-        req.session.destroy((err) => { responseBadRequest(req, res, err) });
-        res.json({ message: 'logged out succesfully' });
+        req.session.destroy((err) => { console.log(err) });
+        res.json({ message: 'logged out successfully' });
 
     },
-
     async signup(req, res) {
-        if (req.body.skills) {
-            await freeLancerDbController.addFreelancer;
+        if (req.body.freelancer) {
+
+            await freeLancerDbController.addFreelancer(req, res);
         }
         else {
             await customerDbController.addCustomer(req, res);
         }
     },
 
-    getCredentials(req,res){
+    getCredentials(req, res) {
         const tmpUser = req.session.user;
         console.log(tmpUser);
         const user = {
@@ -85,7 +90,7 @@ exports.authController = {
             first_name: tmpUser.personal_details.first_name,
             last_name: tmpUser.personal_details.last_name,
             email: tmpUser.personal_details.email,
-            role : tmpUser.role
+            role: tmpUser.role
         }
         console.log(user);
         res.json(user);

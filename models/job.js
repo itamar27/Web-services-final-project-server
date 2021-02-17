@@ -17,6 +17,7 @@ const goalSchema = new Schema({
 
 const jobSchema = new Schema({
     id: { type: Number },
+    description: { type: String },
     project_name: { type: String, required: true },
     price: { type: String },
     customer_id: { type: Number },
