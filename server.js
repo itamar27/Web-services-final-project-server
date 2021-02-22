@@ -43,11 +43,10 @@ app.use(session({
     store: sessionStore,
     name: 'connect.sid',
     cookie: {
-        // maxAge: 1000 * 60 * 60 * 24,
+        maxAge: 1000 * 60 * 60 * 24,
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        // domain: '.herokuapp.com'
     }
 }));
 
