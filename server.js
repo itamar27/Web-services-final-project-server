@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-    origin: 'https://hungry-mcnulty-42e26a.netlify.app/',
+    origin: 'https://hungry-mcnulty-42e26a.netlify.app',
     methods: ["GET", "POST", "OPTIONS"],
     credentials: true,
     preflightContinue: true
