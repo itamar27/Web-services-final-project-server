@@ -26,7 +26,6 @@ const verify = async (token) => {
 
 
 exports.authController = {
-
     async login(req, res) {
         let token = req.body.token;
         try {
