@@ -38,15 +38,15 @@ const sessionStore = new MongoStore({
 app.set('trust proxy', 1);
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
+    resave: true,
+    saveUninitialized: false,
     store: sessionStore,
     name: 'connect.sid',
-    httpOnly: false,
     cookie: {
-        maxAge: 1000 * 60 * 60 * 24,
+        // maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
         secure: true,
-        // sameSite: 'none',
+        sameSite: 'none',
         // domain: '.herokuapp.com'
     }
 }));
