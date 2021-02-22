@@ -35,12 +35,25 @@ const sessionStore = new MongoStore({
     ttl: 1000 * 60 * 60 * 24
 });
 
+// app.use(session({
+//     secret: process.env.SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: true,
+//     store: sessionStore,
+//     name: 'connect.sid',
+//     cookie: {
+//         maxAge: 1000 * 60 * 60 * 24,
+//         secure: false,
+//         sameSite: 'none',
+//         domain: '.herokuapp.com'
+//     }
+// }));
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     store: sessionStore,
-    name: 'connect.sid',
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,
         secure: false,
