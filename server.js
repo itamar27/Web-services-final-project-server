@@ -10,14 +10,13 @@ const { jobRouter } = require('./routers/job.router');
 const { authRouter } = require('./routers/auth.router');
 const { writeRequest } = require('./logs/logs');
 
-const cookieParser = require('cookie-parser')
 const cors = require('cors');
 const authMiddle = require('./middleware/auth');
 
-app.enable('trust proxy');
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser())
+
 app.use(cors({
     origin: true,
     methods: ["GET", "POST", "OPTIONS"],
@@ -43,10 +42,10 @@ app.use(session({
     store: sessionStore,
     name: 'connect.sid',
     cookie: {
-        maxAge: 1000 * 60 * 60 * 24, // Equals 1 day (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
+        maxAge: 1000 * 60 * 60 * 24,
         secure: false,
         sameSite: 'lax',
-        domain: 'https://hungry-mcnulty-42e26a.netlify.app'
+        domain: '.herokuapp.com'
     }
 }));
 
