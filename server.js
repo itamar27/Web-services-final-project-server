@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
     origin: 'https://hungry-mcnulty-42e26a.netlify.app',
-    methods: ["GET", "POST", "OPTIONS"],
+    methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
     credentials: true,
     preflightContinue: true
 }));
