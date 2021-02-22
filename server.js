@@ -40,11 +40,11 @@ app.use(session({
     saveUninitialized: true,
     store: sessionStore,
     // name: 'connect.sid',
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24, // Equals 1 day (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
-        secure: true,
-        sameSite: 'lax',
-    }
+    // cookie: {
+    //     maxAge: 1000 * 60 * 60 * 24, // Equals 1 day (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
+    //     secure: true,
+    //     sameSite: 'lax',
+    // }
 }));
 // ***** session related *******
 
