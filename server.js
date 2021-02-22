@@ -16,8 +16,12 @@ const authMiddle = require('./middleware/auth');
 app.enable('trust proxy');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: true, credentials: true }))
-
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "POST", "OPTIONS"],
+    credentials: true,
+    preflightContinue: true
+}));
 
 // *****  session related *******
 const session = require('express-session');
