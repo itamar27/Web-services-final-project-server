@@ -42,6 +42,7 @@ app.use(session({
     saveUninitialized: true,
     store: sessionStore,
     name: 'connect.sid',
+    httpOnly: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,
         secure: true,
