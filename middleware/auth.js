@@ -32,8 +32,7 @@ const checkAuthenticated = async (req, res, next) => {
     if (req.session.user) {
         next()
     } else {
-        // need to redirect at front to login/sign up page
-        // res.send("not signed in or registred")
+        console.log(req.session);
         res.json({ error: "not signed in or registred" })
     }
 }
