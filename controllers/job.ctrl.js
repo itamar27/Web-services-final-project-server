@@ -28,16 +28,15 @@ exports.jobDbController = {
             .catch(err => responseBadRequest(req, res, `At: getJob, Error getting data from db: ${err}`));
     },
 
-    getCustomerJobs(req,res){
-        
-        Job.find({'customer_id': req.params.id})
+    getCustomerJobs(req, res) {
+        Job.find({ 'customer_id': req.params.id })
             .then(docs => {
                 let returnedJobs = []
-                docs.forEach(doc =>{ 
-                   const job = {
-                        project_id : doc.id, 
-                        title : doc.project_name,
-                        description : doc.description,
+                docs.forEach(doc => {
+                    const job = {
+                        project_id: doc.id,
+                        title: doc.project_name,
+                        description: doc.description,
                         price: doc.price,
                         owner_id: doc.customer_id,
                     }
@@ -48,6 +47,38 @@ exports.jobDbController = {
             })
             .catch(err => responseBadRequest(req, res, `Error getting jobs data from db: ${err}`));
     },
+
+
+    async getFreelancerJobs(req, res) {
+
+        const jobs = req.session.user.jobs_id
+        let returnedJobs = [];
+
+
+        try {
+            for (let i = 0; i < jobs.length; i++) {
+                const tmp = await Job.find({ 'id': jobs[i] });
+
+                const job = {
+                    project_id: tmp[0].id,
+                    title: tmp[0].project_name,
+                    description: tmp[0].description,
+                    price: tmp[0].price,
+                    owner_id: tmp[0].customer_id,
+                }
+                console.log(job);
+                returnedJobs.push(job);
+            }
+        } catch (err) {
+            responseBadRequest(req, res, `Error getting jobs data from db: ${err}`)
+        }
+
+
+        res.json(returnedJobs);
+        writeResponse(req, res);
+
+    },
+
 
     async addJob(req, res) {
         Job.findOne({}).sort({ _id: -1 }).limit(1)
@@ -87,9 +118,9 @@ exports.jobDbController = {
     },
 
 
-    updateJob(req, res) {
-        const update = req.body.job
-        Job.findOneAndUpdate({ id: req.params.id }, update, { new: true, useFindAndModify: false })
+    updateJobGoals(req, res) {
+        const update = req.body.goals
+        Job.findOneAndUpdate({ id: req.params.id }, { 'goals': update }, { new: true, useFindAndModify: false })
             .then(docs => {
                 res.json(docs);
                 writeResponse(req, res);

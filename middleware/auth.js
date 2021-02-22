@@ -28,6 +28,7 @@ const findByGoogle = async (req, cookie) => {
 
 
 const checkAuthenticated = async (req, res, next) => {
+
     if (req.session.user) {
         next()
     } else {
@@ -48,7 +49,6 @@ const checkRole = (role) => {
 }
 
 const checkJobOwnership = (req, res, next) => {
-
     let ownedJobs = null
     let allowed = false
     if (req.session.role === constants.FREELANCER)
@@ -63,7 +63,6 @@ const checkJobOwnership = (req, res, next) => {
     })
 
     if (allowed) {
-        console.log("permitted");
         next()
     }
     else {

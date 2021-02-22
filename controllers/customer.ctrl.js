@@ -77,6 +77,11 @@ const customerDbController = {
 
                     }
                     const url = `/user/${user.first_name}_${user.last_name}`
+
+                    console.log('siginig up customer:');
+                    console.log(req.session.user);
+
+
                     res.json({ user: user, url: url });
                     writeResponse(req, res);
                 })

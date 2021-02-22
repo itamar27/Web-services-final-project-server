@@ -30,6 +30,8 @@ const sessionStore = new MongoStore({
     ttl: 1000 * 60 * 60 * 24
 })
 
+
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -43,6 +45,7 @@ app.use(session({
 // ***** session related *******
 
 
+
 app.all('*', (req, res, next) => {
     writeRequest(req);
     next();
@@ -52,13 +55,11 @@ app.use('/auth', authRouter)
 
 app.use(authMiddle.checkAuthenticated)
 
-app.use('/api/comments',commentsRouter )
+app.use('/api/comments', commentsRouter)
 app.use('/api/freelancers', freelancerRouter);
 app.use('/api/customers', customerRouter);
 app.use('/api/freelancerApi', freelancerApiRouter);
 app.use('/api/jobs', jobRouter);
-
-
 
 app.use((req, res) => {
     res.status(500).send('Something is broken!');
