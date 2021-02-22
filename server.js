@@ -10,12 +10,14 @@ const { jobRouter } = require('./routers/job.router');
 const { authRouter } = require('./routers/auth.router');
 const { writeRequest } = require('./logs/logs');
 
+const cookieParser = require('cookie-parser')
 const cors = require('cors');
 const authMiddle = require('./middleware/auth');
 
 app.enable('trust proxy');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
 app.use(cors({
     origin: true,
     methods: ["GET", "POST", "OPTIONS"],
@@ -47,6 +49,7 @@ app.use(session({
         domain: '"https://freelancerjobmap.herokuapp.com/"'
     }
 }));
+
 // ***** session related *******
 
 
