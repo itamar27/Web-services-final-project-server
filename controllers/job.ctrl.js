@@ -2,7 +2,7 @@ const Job = require('../models/job');
 const { processBody, responseBadRequest, writeResponse } = require('./helper.ctrl');
 const { convertId, updateCustomerHelper } = require('./customer.ctrl');
 const { updateFreelancerHelper } = require('./freelancer.ctrl');
-const {updateCommentStatus} = require('./comments.ctrl');
+const { updateCommentStatus } = require('./comments.ctrl');
 const moment = require('moment');
 
 
@@ -36,7 +36,7 @@ exports.jobDbController = {
                     .then((serverId) => {
                         const newJob = new Job({
                             "id": lastJob.id + 1,
-                            "description" : req.body.description,
+                            "description": req.body.description,
                             "project_name": req.body.project_name,
                             "price": req.body.price,
                             "start_date": moment().format('MM/DD/YYYY'),
@@ -51,7 +51,7 @@ exports.jobDbController = {
                                     .then(() => {
                                         updateCustomerHelper(result.customer_id, { "$push": { "jobs_id": result.id } })
                                             .then(() => {
-                                                updateCommentStatus(req,res,req.body.projectId,  true);
+                                                updateCommentStatus(req, res, req.body.projectId, true);
                                                 res.json(result.id);
                                                 writeResponse(req, res);
                                             })
@@ -68,8 +68,7 @@ exports.jobDbController = {
 
 
     updateJob(req, res) {
-        const update = processBody(req.body);
-
+        const update = req.body.job
         Job.findOneAndUpdate({ id: req.params.id }, update, { new: true, useFindAndModify: false })
             .then(docs => {
                 res.json(docs);
@@ -77,6 +76,7 @@ exports.jobDbController = {
             })
             .catch(err => responseBadRequest(req, res, `Error updating job from db: ${err}`));
     },
+
 
     deleteJob(req, res) {
         Job.deleteOne({ id: req.body.id })
