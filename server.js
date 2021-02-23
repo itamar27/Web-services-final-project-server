@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-    origin: ['https://web-workflows.netlify.app', 'http://http://localhost:3000'],
+    origin: ['https://web-workflows.netlify.app', 'http://localhost:3000'],
     methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
     credentials: true,
     preflightContinue: true
