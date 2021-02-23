@@ -29,12 +29,11 @@ freeLancerDbController = {
             lastFreelancer = await Freelancer.findOne({}).sort({ _id: -1 }).limit(1)
             lastId = lastFreelancer.personal_details.id;
         } catch (err) {
-            //   handle later
+            writeResponse(req, res, err);
         }
-      
+
         let newFreelancer;
         try {
-
             newFreelancer = new Freelancer({
                 'personal_details': {
                     'id': lastId + 1,
@@ -114,7 +113,7 @@ const getFreelancerByGoogle = async (id) => {
         let freelancer = await Freelancer.findOne({ "personal_details.google_id": id })
         return freelancer
     } catch (err) {
-        console.log(err);
+        writeResponse(req, res, `At: get freelancer by google, error while updating freelancer: ${err}`);
     }
 }
 

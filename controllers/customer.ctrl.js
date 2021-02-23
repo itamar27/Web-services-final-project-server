@@ -2,10 +2,7 @@ const Customer = require('../models/customer');
 const { processBody, responseBadRequest, writeResponse, getFreelancerApiId } = require('./helper.ctrl');
 const { CUSTOMER } = require('../constants');
 
-
-
 const customerDbController = {
-
     getCustomers(req, res) {
         getAllCostumers()
             .then((ans) => {
@@ -36,8 +33,7 @@ const customerDbController = {
             lastCostumer = await Customer.findOne({}).sort({ _id: -1 }).limit(1);
             lastId = lastCostumer.personal_details.id;
         } catch (err) {
-
-            console.log(err);
+            writeResponse(req, res, err);
         }
 
         let newCustomer;
@@ -77,11 +73,6 @@ const customerDbController = {
 
                     }
                     const url = `/user/${user.first_name}_${user.last_name}`
-
-                    console.log('siginig up customer:');
-                    console.log(req.session.user);
-
-
                     res.json({ user: user, url: url });
                     writeResponse(req, res);
                 })
@@ -105,7 +96,7 @@ const customerDbController = {
     deleteCustomer(req, res) {
         Customer.deleteOne({ "personal_details.id": req.params.id })
             .then(docs => res.json(docs))
-            .catch(err => console.log(`Error deleting restaurant from db: ${err}`));
+            .catch(err => responseBadRequest(req, res, `Error deleting restaurant from db: ${err}`));
     },
 };
 
@@ -135,7 +126,7 @@ const getCustomerByGoogle = async (id) => {
         let customer = await Customer.findOne({ "personal_details.google_id": id })
         return customer
     } catch (err) {
-        console.log(err);
+        writeResponse(req, res, `At: get customer by google, cant find customer: ${err}`);
     }
 }
 

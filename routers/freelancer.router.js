@@ -4,7 +4,6 @@ const auth = require('../middleware/auth');
 
 const freelancerRouter = new Router();
 
-
 freelancerRouter.get('/', freeLancerDbController.getFreelancers);
 freelancerRouter.get('/:id', auth.checkIfSelf, freeLancerDbController.getFreelancer);
 freelancerRouter.post('/', freeLancerDbController.addFreelancer);

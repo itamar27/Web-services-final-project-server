@@ -29,4 +29,4 @@ const jobSchema = new Schema({
 
 
 const job = model('job', jobSchema);
-module.exports = job;
+module.exports = job; 

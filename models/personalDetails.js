@@ -8,7 +8,6 @@ const personalDetailsSchema = new Schema({
     email: { type: String },
     linkedin: { type: String },
     facebook: { type: String },
-
 });
 
 
