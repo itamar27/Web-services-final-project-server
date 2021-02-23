@@ -1,5 +1,5 @@
 const Job = require('../models/job');
-const { processBody, responseBadRequest, writeResponse } = require('./helper.ctrl');
+const { responseBadRequest, writeResponse } = require('./helper.ctrl');
 const { convertId, updateCustomerHelper } = require('./customer.ctrl');
 const { updateFreelancerHelper } = require('./freelancer.ctrl');
 const { updateCommentStatus } = require('./comments.ctrl');
@@ -9,8 +9,7 @@ const moment = require('moment');
 
 exports.jobDbController = {
 
-    async getJobs(req, res) {
-
+    getJobs(req, res) {
         Job.find({})
             .then(docs => {
                 res.json(docs);
@@ -50,10 +49,8 @@ exports.jobDbController = {
 
 
     async getFreelancerJobs(req, res) {
-
         const jobs = req.session.user.jobs_id
         let returnedJobs = [];
-
 
         try {
             for (let i = 0; i < jobs.length; i++) {
@@ -73,14 +70,12 @@ exports.jobDbController = {
             responseBadRequest(req, res, `Error getting jobs data from db: ${err}`)
         }
 
-
         res.json(returnedJobs);
         writeResponse(req, res);
-
     },
 
 
-    async addJob(req, res) {
+    addJob(req, res) {
         Job.findOne({}).sort({ _id: -1 }).limit(1)
             .then((lastJob) => {
                 convertId(req.body.owner_id)
@@ -97,7 +92,6 @@ exports.jobDbController = {
                         });
                         newJob.save()
                             .then((result) => {
-
                                 updateFreelancerHelper(req.session.user.personal_details.id, { "$push": { "jobs_id": result.id } })
                                     .then(() => {
                                         updateCustomerHelper(result.customer_id, { "$push": { "jobs_id": result.id } })

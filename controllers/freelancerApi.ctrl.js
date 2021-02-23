@@ -19,9 +19,7 @@ class JobOffer {
     }
 }
 
-
 const freelancerApiController = {
-
     async getProjects(req, res) {
         let jobs = Array();
         const url = 'https://www.freelancer.com/api/projects/0.1/projects/?compact=true&full_description=true&languages[]=en&job_details=true';
@@ -49,6 +47,7 @@ const freelancerApiController = {
 
                 })
             })
+
             res.json(response);
             writeResponse(req, res);
         } catch (err) {
@@ -81,12 +80,10 @@ const freelancerApiController = {
                 })
             })
 
-            // console.log('filterd jobs:', returnedJobs);
             res.json(returnedJobs);
             writeResponse(req, res);
-
         } catch (err) {
-            res.send(err);
+            responseBadRequest(req, res, err)
         }
     },
 }
@@ -95,7 +92,6 @@ const freelancerApiController = {
 const generateJobOffers = (offers) => {
     let jobs = Array();
     offers.data.result.projects.forEach((project) => {
-        // if (project.status == "active") {
         project.jobs.every((job) => {
             if ([1, 3, 5].includes(job.category.id)) {
                 jobs.push(new JobOffer(project, job));
@@ -103,7 +99,6 @@ const generateJobOffers = (offers) => {
             }
             return true;
         })
-        // }
     })
     return jobs
 }

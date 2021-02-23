@@ -13,8 +13,6 @@ const verify = async (token) => {
     });
     const payload = ticket.getPayload();
 
-    // check if payload exist
-
     let user = {
         id: payload['sub'],
         first_name: payload['given_name'],
@@ -48,19 +46,16 @@ exports.authController = {
                     user.id = localUser.personal_details.id;
                     res.json({ user, url })
                     writeResponse(req, res);
-                }  // user tried to login and exisit in db so all good
+                }
                 else {
                     url = '/signup';
-                    res.json({ user, url });   // user tried to login but dosent exist -> need to sign up
+                    res.json({ user, url });
                 }
             }
 
             else {
-                err = 'Problome with google token';
-                responseBadRequest(req, res, err);
+                responseBadRequest(req, res, 'Problome with google token');
             }
-
-
         } catch (err) {
             responseBadRequest(req, res, `Error with authenticating ${err.message}`);
         }
@@ -74,25 +69,10 @@ exports.authController = {
     },
     async signup(req, res) {
         if (req.body.freelancer) {
-
             await freeLancerDbController.addFreelancer(req, res);
         }
         else {
             await customerDbController.addCustomer(req, res);
         }
     },
-
-    getCredentials(req, res) {
-        const tmpUser = req.session.user;
-        console.log(tmpUser);
-        const user = {
-            id: tmpUser.personal_details.id,
-            first_name: tmpUser.personal_details.first_name,
-            last_name: tmpUser.personal_details.last_name,
-            email: tmpUser.personal_details.email,
-            role: tmpUser.role
-        }
-        console.log(user);
-        res.json(user);
-    }
 } 
