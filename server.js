@@ -65,7 +65,6 @@ app.use('/auth', authRouter)
 
 // app.use(authMiddle.checkAuthenticated)
 
-
 app.use('/api/comments', commentsRouter)
 app.use('/api/freelancers', freelancerRouter);
 app.use('/api/customers', customerRouter);
