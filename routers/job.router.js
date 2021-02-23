@@ -12,7 +12,7 @@ jobRouter.get('/user/:id', jobDbController.getCustomerJobs);
 jobRouter.get('/:id', auth.checkJobOwnership, jobDbController.getJob);
 jobRouter.post('/', auth.checkRole(constants.FREELANCER), jobDbController.addJob);
 jobRouter.put('/:id', auth.checkJobOwnership, jobDbController.updateJobGoals);
-jobRouter.delete('/:id', auth.checkJobOwnership, jobDbController.deleteJob);
+jobRouter.delete('/:id', jobDbController.deleteJob);
 
 
 module.exports = { jobRouter };
