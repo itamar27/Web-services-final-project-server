@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-    origin: 'https://web-workflows.netlify.app',
+    origin: ['https://web-workflows.netlify.app', 'http://http://localhost:3000'],
     methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
     credentials: true,
     preflightContinue: true
@@ -63,7 +63,8 @@ app.all('*', (req, res, next) => {
 
 app.use('/auth', authRouter)
 
-app.use(authMiddle.checkAuthenticated)
+// app.use(authMiddle.checkAuthenticated)
+
 
 app.use('/api/comments', commentsRouter)
 app.use('/api/freelancers', freelancerRouter);
