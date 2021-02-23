@@ -13,7 +13,6 @@ const { writeRequest } = require('./logs/logs');
 const cors = require('cors');
 const authMiddle = require('./middleware/auth');
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -24,7 +23,7 @@ app.use(cors({
     preflightContinue: true
 }));
 
-// *****  session related *******
+
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const mongoose = require('./db_connection')
@@ -51,11 +50,6 @@ app.use(session({
 }));
 
 
-
-// ***** session related *******
-
-
-
 app.all('*', (req, res, next) => {
     writeRequest(req);
     next();
@@ -63,7 +57,7 @@ app.all('*', (req, res, next) => {
 
 app.use('/auth', authRouter)
 
-// app.use(authMiddle.checkAuthenticated)
+app.use(authMiddle.checkAuthenticated)
 
 app.use('/api/comments', commentsRouter)
 app.use('/api/freelancers', freelancerRouter);
