@@ -11,7 +11,7 @@ const addComment = async (offer, userId) => {
     })
     await comment.save()
         .then(() => { return })
-        .catch(err => console.log(err))
+        .catch(err => { throw err })
 }
 
 const updateComments = async (userId, apiOffers) => {

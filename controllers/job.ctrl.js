@@ -63,7 +63,6 @@ exports.jobDbController = {
                     price: tmp[0].price,
                     owner_id: tmp[0].customer_id,
                 }
-                console.log(job);
                 returnedJobs.push(job);
             }
         } catch (err) {

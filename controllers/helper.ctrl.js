@@ -64,7 +64,7 @@ const getFreelancerApiId = (username) => {
             freelancerId = parseInt(Object.keys(response.data.result.users)[0]);
             return freelancerId;
 
-        }).catch(err => console.log(err));
+        }).catch(err => { throw err });
 
 }
 

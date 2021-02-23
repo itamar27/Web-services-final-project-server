@@ -63,7 +63,7 @@ exports.authController = {
 
     async logout(req, res) {
         res.clearCookie('connect.sid');
-        req.session.destroy((err) => { console.log(err) });
+        req.session.destroy((err) => { writeResponse(req, res, err) });
         res.json({ message: 'logged out successfully' });
 
     },
